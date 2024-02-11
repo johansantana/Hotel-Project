@@ -1,6 +1,6 @@
 ﻿namespace Hotel.Infrastructure;
 
-public class UsuarioRepository : IUsuarioRepository
+public class UsuarioRepository : BaseRepository, IUsuarioRepository
 {
     private readonly HotelContext hotelContext;
 

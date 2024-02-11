@@ -1,6 +1,6 @@
 ﻿namespace Hotel.Infrastructure;
 
-public class RolUsuarioRepository : IRolUsuarioRepository
+public class RolUsuarioRepository : BaseRepository, IRolUsuarioRepository
 {
     private readonly HotelContext hotelContext;
 
@@ -14,21 +14,21 @@ public class RolUsuarioRepository : IRolUsuarioRepository
         return hotelContext.RolUsuarios;
     }
 
-    public RolUsuario? GetRolUsuario(int IdRolUsuario)
+    public RolUsuario? GetRolUsuario(int idRolUsuario)
     {
         return hotelContext.RolUsuarios
-            .FirstOrDefault(rolUsuario => rolUsuario.IdRolUsuario == IdRolUsuario);
+            .FirstOrDefault(rolUsuario => rolUsuario.IdRolUsuario == idRolUsuario);
     }
 
-    public void AddRolUsuario(RolUsuario RolUsuario)
+    public void AddRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.RolUsuarios.Add(RolUsuario);
+        hotelContext.RolUsuarios.Add(rolUsuario);
         hotelContext.SaveChangesAsync();
     }
 
-    public void DeleteRolUsuario(RolUsuario RolUsuario)
+    public void DeleteRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.Remove(RolUsuario);
+        hotelContext.Remove(rolUsuario);
         hotelContext.SaveChangesAsync();
     }
 }
