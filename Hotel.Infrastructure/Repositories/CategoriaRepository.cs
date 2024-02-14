@@ -8,14 +8,14 @@ public class CategoriaRepository : ICategoriaRepository
     {
         this.hotelContext = hotelContext;
     }
-    public void addCategoria(Categoria categoria)
+    public void AddCategoria(Categoria categoria)
     {
         hotelContext.Categoria.Add(categoria);
         hotelContext.SaveChangesAsync();
 
     }
 
-    public void deleteCategoria(Categoria categoria)
+    public void DeleteCategoria(Categoria categoria)
     {
         hotelContext.Remove(categoria);
         hotelContext.SaveChangesAsync();
