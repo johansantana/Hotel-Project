@@ -10,6 +10,8 @@ public class HotelContext : DbContext
     public DbSet<RolUsuario> RolUsuarios { get; set; }
     public DbSet<Piso> pisos { get; set; }
 
+    public DbSet<Categoria> Categoria { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Hotel_DB");
