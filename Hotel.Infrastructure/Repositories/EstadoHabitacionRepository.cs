@@ -28,7 +28,7 @@ public class EstadoHabitacionRepository : BaseRepository, IEstadoHabitacionRepos
 
     public void DeleteEstadoHabitacion(EstadoHabitacion estadoHabitacion)
     {
-        hotelContext.Remove(estadoHabitacion);
+        hotelContext.EstadoHabitaciones.Remove(estadoHabitacion);
         hotelContext.SaveChangesAsync();
     }
 }

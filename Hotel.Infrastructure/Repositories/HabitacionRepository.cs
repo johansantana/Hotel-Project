@@ -28,7 +28,7 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
 
     public void DeleteHabitacion(Habitacion habitacion)
     {
-        hotelContext.Remove(habitacion);
+        hotelContext.Habitaciones.Remove(habitacion);
         hotelContext.SaveChangesAsync();
     }
 }
