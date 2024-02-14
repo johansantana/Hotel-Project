@@ -28,7 +28,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
 
     public void DeleteUsuario(Usuario Usuario)
     {
-        hotelContext.Remove(Usuario);
+        hotelContext.Usuarios.Remove(Usuario);
         hotelContext.SaveChangesAsync();
     }
 }

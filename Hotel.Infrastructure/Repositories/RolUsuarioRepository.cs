@@ -28,7 +28,7 @@ public class RolUsuarioRepository : BaseRepository, IRolUsuarioRepository
 
     public void DeleteRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.Remove(rolUsuario);
+        hotelContext.RolUsuarios.Remove(rolUsuario);
         hotelContext.SaveChangesAsync();
     }
 }
