@@ -11,8 +11,8 @@ namespace Hotel.Infrastructure.Interfaces
     {
         IEnumerable<Piso> GetPisos();
         Piso? GetPiso(int IdPiso);
-        void Save(Piso piso);
-        void Remove (Piso piso);
-        void Update (Piso piso);
+        void SavePiso(Piso piso);
+        void RemovePiso(Piso piso);
+        void UpdatePiso(Piso piso);
     }
 }

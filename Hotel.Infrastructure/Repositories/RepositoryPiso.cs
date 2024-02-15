@@ -25,19 +25,22 @@ namespace Hotel.Infrastructure.Repositories
         public Piso? GetPiso(int IdPiso) => hotelContext.pisos
             .FirstOrDefault(cd => cd.IdPiso == IdPiso);
 
-        public void Save(Piso piso)
+        public void SavePiso(Piso piso)
         {
             hotelContext.pisos.Add(piso);
+            hotelContext.SaveChangesAsync();
         }
 
-        public void Remove(Piso piso)
+        public void RemovePiso(Piso piso)
         {
             hotelContext.pisos.Remove(piso);
+            hotelContext.SaveChangesAsync();
         }
 
-        public void Update(Piso piso)
+        public void UpdatePiso(Piso piso)
         {
             hotelContext.pisos.Update(piso);
+            hotelContext.SaveChangesAsync();
         }
     }
 }

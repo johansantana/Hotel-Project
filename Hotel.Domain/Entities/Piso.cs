@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hotel.Domain.Entities
 {
-    public class Pisos : BaseEntity
+    public class Piso : BaseEntity
     {
         public required int IdPiso {  get; set; }
         public string? Descripcion { get; set; }
