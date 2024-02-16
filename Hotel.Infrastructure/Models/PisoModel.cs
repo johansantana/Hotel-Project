@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Hotel.Infrastructure.Models
 {
-    public abstract class Piso
+    public abstract class PisoModel
     {
         public int IdPiso { get; set; }
         public DateTime FechaCreacion { get; set; } = new DateTime();

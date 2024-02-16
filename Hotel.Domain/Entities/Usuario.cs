@@ -1,4 +1,6 @@
-﻿namespace Hotel.Domain;
+﻿using Hotel.Domain.Core;
+
+namespace Hotel.Domain;
 
 public class Usuario : BaseEntity
 {

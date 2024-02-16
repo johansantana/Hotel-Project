@@ -1,5 +1,7 @@
 ﻿using Hotel.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Hotel.Infrastructure;
 
@@ -8,7 +10,7 @@ public class HotelContext : DbContext
     // Cargar aqui los modelos
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<RolUsuario> RolUsuarios { get; set; }
-    public DbSet<Piso> pisos { get; set; }
+    public DbSet<PisoModel> Pisos { get; set; }
 
     public DbSet<Categoria> Categoria { get; set; }
 
