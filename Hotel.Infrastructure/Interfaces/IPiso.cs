@@ -9,10 +9,10 @@ namespace Hotel.Infrastructure.Interfaces
 {
     public interface IPiso 
     {
-        IEnumerable<PisoModel> GetPisos();
-        PisoModel? GetPiso(int IdPiso);
-        void SavePiso(PisoModel piso);
-        void RemovePiso(PisoModel piso);
-        void UpdatePiso(PisoModel piso);
+        IEnumerable<Piso> GetPisos();
+        Piso? GetPiso(int IdPiso);
+        void SavePiso(Piso piso);
+        void RemovePiso(Piso piso);
+        void UpdatePiso(Piso piso);
     }
 }

@@ -17,27 +17,27 @@ namespace Hotel.Infrastructure.Repositories
             this.hotelContext = hotelContext;
         }
 
-        public IEnumerable<PisoModel> GetPisos()
+        public IEnumerable<Piso> GetPisos()
         {
             return hotelContext.Pisos;
         }
 
-        public PisoModel? GetPiso(int IdPiso) => hotelContext.Pisos
+        public Piso? GetPiso(int IdPiso) => hotelContext.Pisos
             .FirstOrDefault(cd => cd.IdPiso == IdPiso);
 
-        public void SavePiso(PisoModel piso)
+        public void SavePiso(Piso piso)
         {
             hotelContext.Pisos.Add(piso);
             hotelContext.SaveChangesAsync();
         }
 
-        public void RemovePiso(PisoModel piso)
+        public void RemovePiso(Piso piso)
         {
             hotelContext.Pisos.Remove(piso);
             hotelContext.SaveChangesAsync();
         }
 
-        public void UpdatePiso(PisoModel piso)
+        public void UpdatePiso(Piso piso)
         {
             hotelContext.Pisos.Update(piso);
             hotelContext.SaveChangesAsync();
