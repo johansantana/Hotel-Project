@@ -6,7 +6,7 @@ public class HotelContext : DbContext
 {
     // Cargar aqui los modelos
 
-    public DbSet<Categoria> Categoria { get; set; }
+    public DbSet<Categoria> Categorias { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
