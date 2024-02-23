@@ -11,24 +11,66 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
 
     public IEnumerable<Habitacion> GetHabitaciones()
     {
-        return hotelContext.Habitaciones;
+        try
+        {
+            return hotelContext.Habitaciones;
+        }
+        catch (HabitacionException)
+        {
+            throw new HabitacionException();
+        }
     }
 
     public Habitacion? GetHabitacion(int idHabitacion)
     {
-        return hotelContext.Habitaciones
-            .FirstOrDefault(habitacion => habitacion.IdHabitacion == idHabitacion);
+        try
+        {
+            return hotelContext.Habitaciones
+                .FirstOrDefault(habitacion => habitacion.IdHabitacion == idHabitacion);
+        }
+        catch (HabitacionException)
+        {
+            throw new HabitacionException();
+        }
+
     }
 
     public void AddHabitacion(Habitacion habitacion)
     {
-        hotelContext.Habitaciones.Add(habitacion);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.Habitaciones.Add(habitacion);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (HabitacionException)
+        {
+            throw new HabitacionException();
+        }
+    }
+
+    public void UpdateHabitacion(Habitacion habitacion)
+    {
+        try
+        {
+            hotelContext.Habitaciones.Update(habitacion);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (HabitacionException)
+        {
+            throw new HabitacionException();
+        }
     }
 
     public void DeleteHabitacion(Habitacion habitacion)
     {
-        hotelContext.Habitaciones.Remove(habitacion);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.Habitaciones.Remove(habitacion);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (HabitacionException)
+        {
+            throw new HabitacionException();
+        }
     }
 }
