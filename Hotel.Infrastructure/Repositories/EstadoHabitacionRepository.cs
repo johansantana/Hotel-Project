@@ -11,24 +11,65 @@ public class EstadoHabitacionRepository : BaseRepository, IEstadoHabitacionRepos
 
     public IEnumerable<EstadoHabitacion> GetEstadoHabitaciones()
     {
-        return hotelContext.EstadoHabitaciones;
+        try
+        {
+            return hotelContext.EstadoHabitaciones;
+        }
+        catch (Exception)
+        {
+            throw new EstadoHabitacionException();
+        }
     }
 
     public EstadoHabitacion? GetEstadoHabitacion(int idEstadoHabitacion)
     {
-        return hotelContext.EstadoHabitaciones
-            .FirstOrDefault(estadoHabitacion => estadoHabitacion.IdEstadoHabitacion == idEstadoHabitacion);
+        try
+        {
+            return hotelContext.EstadoHabitaciones
+                .FirstOrDefault(estadoHabitacion => estadoHabitacion.IdEstadoHabitacion == idEstadoHabitacion);
+        }
+        catch (Exception)
+        {
+            throw new EstadoHabitacionException();
+        }
     }
 
     public void AddEstadoHabitacion(EstadoHabitacion estadoHabitacion)
     {
-        hotelContext.EstadoHabitaciones.Add(estadoHabitacion);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.EstadoHabitaciones.Add(estadoHabitacion);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new EstadoHabitacionException();
+        }
+    }
+
+    public void UpdateEstadoHabitacion(EstadoHabitacion estadoHabitacion)
+    {
+        try
+        {
+            hotelContext.EstadoHabitaciones.Update(estadoHabitacion);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new EstadoHabitacionException();
+        }
     }
 
     public void DeleteEstadoHabitacion(EstadoHabitacion estadoHabitacion)
     {
-        hotelContext.EstadoHabitaciones.Remove(estadoHabitacion);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.EstadoHabitaciones.Remove(estadoHabitacion);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new EstadoHabitacionException();
+        }
     }
 }
