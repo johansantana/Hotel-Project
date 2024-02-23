@@ -1,6 +1,6 @@
 ﻿namespace Hotel.Infrastructure;
 
-public class RolUsuarioRepository : IRolUsuarioRepository
+public class RolUsuarioRepository : BaseRepository, IRolUsuarioRepository
 {
     private readonly HotelContext hotelContext;
 
@@ -11,24 +11,65 @@ public class RolUsuarioRepository : IRolUsuarioRepository
 
     public IEnumerable<RolUsuario> GetRolUsuarios()
     {
-        return hotelContext.RolUsuarios;
+        try
+        {
+            return hotelContext.RolUsuarios;
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 
-    public RolUsuario? GetRolUsuario(int IdRolUsuario)
+    public RolUsuario? GetRolUsuario(int idRolUsuario)
     {
-        return hotelContext.RolUsuarios
-            .FirstOrDefault(rolUsuario => rolUsuario.IdRolUsuario == IdRolUsuario);
+        try
+        {
+            return hotelContext.RolUsuarios
+                .FirstOrDefault(rolUsuario => rolUsuario.IdRolUsuario == idRolUsuario);
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 
-    public void AddRolUsuario(RolUsuario RolUsuario)
+    public void AddRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.RolUsuarios.Add(RolUsuario);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.RolUsuarios.Add(rolUsuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 
-    public void DeleteRolUsuario(RolUsuario RolUsuario)
+    public void UpdateRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.Remove(RolUsuario);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.RolUsuarios.Update(rolUsuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
+    }
+
+    public void DeleteRolUsuario(RolUsuario rolUsuario)
+    {
+        try
+        {
+            hotelContext.RolUsuarios.Remove(rolUsuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 }

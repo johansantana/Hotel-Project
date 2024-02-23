@@ -3,7 +3,9 @@
 public interface IUsuarioRepository
 {
     IEnumerable<Usuario> GetUsuarios();
-    Usuario? GetUsuario(int IdUsuario);
-    void AddUsuario(Usuario Usuario);
-    void DeleteUsuario(Usuario Usuario);
+    Usuario? GetUsuario(int idUsuario);
+    void AddUsuario(Usuario usuario);
+
+    void UpdateUsuario(Usuario usuario);
+    void DeleteUsuario(Usuario usuario);
 }

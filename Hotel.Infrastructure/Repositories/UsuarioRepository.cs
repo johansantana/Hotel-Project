@@ -1,6 +1,6 @@
 ﻿namespace Hotel.Infrastructure;
 
-public class UsuarioRepository : IUsuarioRepository
+public class UsuarioRepository : BaseRepository, IUsuarioRepository
 {
     private readonly HotelContext hotelContext;
 
@@ -11,24 +11,65 @@ public class UsuarioRepository : IUsuarioRepository
 
     public IEnumerable<Usuario> GetUsuarios()
     {
-        return hotelContext.Usuarios;
+        try
+        {
+            return hotelContext.Usuarios;
+        }
+        catch (Exception)
+        {
+            throw new UsuarioException();
+        }
     }
 
-    public Usuario? GetUsuario(int IdUsuario)
+    public Usuario? GetUsuario(int idUsuario)
     {
-        return hotelContext.Usuarios
-            .FirstOrDefault(usuario => usuario.IdUsuario == IdUsuario);
+        try
+        {
+            return hotelContext.Usuarios
+                .FirstOrDefault(usuario => usuario.IdUsuario == idUsuario);
+        }
+        catch (Exception)
+        {
+            throw new UsuarioException();
+        }
     }
 
-    public void AddUsuario(Usuario Usuario)
+    public void AddUsuario(Usuario usuario)
     {
-        hotelContext.Usuarios.Add(Usuario);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.Usuarios.Add(usuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new UsuarioException();
+        }
     }
 
-    public void DeleteUsuario(Usuario Usuario)
+    public void UpdateUsuario(Usuario usuario)
     {
-        hotelContext.Remove(Usuario);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.Usuarios.Update(usuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new UsuarioException();
+        }
+    }
+
+    public void DeleteUsuario(Usuario usuario)
+    {
+        try
+        {
+            hotelContext.Usuarios.Remove(usuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new UsuarioException();
+        }
     }
 }
