@@ -11,24 +11,65 @@ public class RolUsuarioRepository : BaseRepository, IRolUsuarioRepository
 
     public IEnumerable<RolUsuario> GetRolUsuarios()
     {
-        return hotelContext.RolUsuarios;
+        try
+        {
+            return hotelContext.RolUsuarios;
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 
     public RolUsuario? GetRolUsuario(int idRolUsuario)
     {
-        return hotelContext.RolUsuarios
-            .FirstOrDefault(rolUsuario => rolUsuario.IdRolUsuario == idRolUsuario);
+        try
+        {
+            return hotelContext.RolUsuarios
+                .FirstOrDefault(rolUsuario => rolUsuario.IdRolUsuario == idRolUsuario);
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 
     public void AddRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.RolUsuarios.Add(rolUsuario);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.RolUsuarios.Add(rolUsuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
+    }
+
+    public void UpdateRolUsuario(RolUsuario rolUsuario)
+    {
+        try
+        {
+            hotelContext.RolUsuarios.Update(rolUsuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 
     public void DeleteRolUsuario(RolUsuario rolUsuario)
     {
-        hotelContext.RolUsuarios.Remove(rolUsuario);
-        hotelContext.SaveChangesAsync();
+        try
+        {
+            hotelContext.RolUsuarios.Remove(rolUsuario);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception)
+        {
+            throw new RolUsuarioException();
+        }
     }
 }
