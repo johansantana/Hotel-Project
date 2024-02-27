@@ -13,6 +13,7 @@ public class CategoriaRepository : ICategoriaRepository
 
         try
         {
+
             hotelContext.Categorias.Add(categoria);
             hotelContext.SaveChangesAsync();
         }

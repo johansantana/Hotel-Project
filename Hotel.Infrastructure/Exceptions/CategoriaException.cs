@@ -1,5 +1,8 @@
-public class CategoriaException : Hotel.Domain.Categoria
+public class CategoriaException : Exception
 {
-    //Segun el profe debe de "Heredar de la clase" no del modelo por eso hice que 
-    //que heredara del categoria de hotel domain
+    public CategoriaException(string mensaje) : base(mensaje)
+    {
+        //logica para guardar expecion
+        //Despes de guardar se envia por correo
+    }
 }
