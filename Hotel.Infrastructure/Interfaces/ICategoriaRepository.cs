@@ -1,9 +1,4 @@
-public interface ICategoriaRepository
+public interface ICategoriaRepository : IBaseRepository<Categoria>
 {
-    IEnumerable<Categoria> GetCategorias();
-    Categoria? GetCategoria(int IdCategoria);
-    void AddCategoria(Categoria categoria);
-    void UpdateCategoria(Categoria categoria);
 
-    void DeleteCategoria(Categoria categoria);
 }

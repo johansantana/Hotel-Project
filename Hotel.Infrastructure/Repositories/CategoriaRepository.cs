@@ -1,73 +1,72 @@
 using Hotel.Infrastructure;
+using Microsoft.Extensions.Logging;
 
-public class CategoriaRepository : ICategoriaRepository
+public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaRepository
 {
     private readonly HotelContext hotelContext;
+    private readonly ILogger<CategoriaRepository> logger;
+    //Realizar abstraccion de esta interfaz 
 
-    public CategoriaRepository(HotelContext hotelContext)
+    public CategoriaRepository(HotelContext hotelContext, ILogger<CategoriaRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
+        this.logger = logger;
     }
-    public void AddCategoria(Categoria categoria)
+    public override List<Categoria> GetEntities()
     {
-
-        try
-        {
-
-            hotelContext.Categorias.Add(categoria);
-            hotelContext.SaveChangesAsync();
-        }
-        catch (System.Exception)
-        {
-
-            throw;
-        }
+        return base.GetEntities();
 
     }
-    public void UpdateCategoria(Categoria categoria)
+
+    public override List<Categoria> FindAll(Func<Categoria, bool> filter)
+    {
+        return hotelContext.Categorias.Where(filter).ToList();
+
+    }
+    public override void Update(Categoria categoria)
     {
         try
         {
-            Categoria categoriaUpdated = GetCategoria(categoria.IdCategoria);
+            Categoria categoriaUpdated = GetEntity(categoria.IdCategoria);
+
             categoriaUpdated.IdCategoria = categoria.IdCategoria;
             categoriaUpdated.Descripcion = categoria.Descripcion;
             categoriaUpdated.Estado = categoria.Estado;
             categoriaUpdated.FechaCreacion = categoria.FechaCreacion;
             hotelContext.Categorias.Update(categoriaUpdated);
+
             hotelContext.SaveChangesAsync();
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
-
-            throw;
+            logger.LogError("Error actualizando la categoria", ex.ToString());
         }
 
     }
-
-    public void DeleteCategoria(Categoria categoria)
+    public override void Add(Categoria categoria)
     {
-
         try
         {
-            Categoria categoriaDeleted = GetCategoria(categoria.IdCategoria);
+            hotelContext.Categorias.Add(categoria);
+            hotelContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error Creando la categoria", ex.ToString());
+        }
+    }
+    public override void Remove(Categoria categoria)
+    {
+        try
+        {
+            Categoria categoriaDeleted = GetEntity(categoria.IdCategoria);
             hotelContext.Remove(categoriaDeleted);
             hotelContext.SaveChangesAsync();
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
-
-            throw;
+            logger.LogError("Error eliminando la categoria", ex.ToString());
         }
-
     }
 
-    public Categoria? GetCategoria(int IdCategoria)
-    {
-        return hotelContext.Categorias.FirstOrDefault(categoria => categoria.IdCategoria == IdCategoria);
-    }
-
-    public IEnumerable<Categoria> GetCategorias()
-    {
-        return hotelContext.Categorias;
-    }
 }
