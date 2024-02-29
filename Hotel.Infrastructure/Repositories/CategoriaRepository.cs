@@ -1,5 +1,6 @@
 using Hotel.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Hotel.Domain;
 
 public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaRepository
 {
@@ -20,7 +21,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
 
     public override List<Categoria> FindAll(Func<Categoria, bool> filter)
     {
-        return hotelContext.Categorias.Where(filter).ToList();
+        return hotelContext.Categoria.Where(filter).ToList();
 
     }
     public override void Update(Categoria categoria)
@@ -29,13 +30,13 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         {
             Categoria categoriaUpdated = GetEntity(categoria.IdCategoria);
 
-            categoriaUpdated.IdCategoria = categoria.IdCategoria;
+            //categoriaUpdated.IdCategoria = categoria.IdCategoria;
             categoriaUpdated.Descripcion = categoria.Descripcion;
             categoriaUpdated.Estado = categoria.Estado;
-            categoriaUpdated.FechaCreacion = categoria.FechaCreacion;
-            hotelContext.Categorias.Update(categoriaUpdated);
+            //categoriaUpdated.FechaCreacion = categoria.FechaCreacion;
+            hotelContext.Categoria.Update(categoriaUpdated);
 
-            hotelContext.SaveChangesAsync();
+            hotelContext.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -43,12 +44,16 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         }
 
     }
-    public override void Add(Categoria categoria)
+    public override void Save(Categoria categoria)
     {
         try
         {
-            hotelContext.Categorias.Add(categoria);
-            hotelContext.SaveChangesAsync();
+            if(hotelContext.Categoria.Any(ca => ca.IdCategoria == categoria.IdCategoria))
+            {
+                throw new CategoriaException("La categoria se encuentra registrada");
+            }
+            this.hotelContext.Categoria.Add(categoria);
+            this.hotelContext.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -60,8 +65,8 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         try
         {
             Categoria categoriaDeleted = GetEntity(categoria.IdCategoria);
-            hotelContext.Remove(categoriaDeleted);
-            hotelContext.SaveChangesAsync();
+            hotelContext.Categoria.Remove(categoriaDeleted);
+            hotelContext.SaveChanges();
         }
         catch (Exception ex)
         {

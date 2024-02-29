@@ -4,7 +4,7 @@ public interface IBaseRepository<TEntity> where TEntity : class
     List<TEntity> GetEntities();
     List<TEntity> FindAll(Func<TEntity, bool> filter);
     bool Exists(Func<TEntity, bool> filter);
-    void Add(TEntity entity);
+    void Save(TEntity entity);
     void Update(TEntity entity);
     void Remove(TEntity entity);
 }
