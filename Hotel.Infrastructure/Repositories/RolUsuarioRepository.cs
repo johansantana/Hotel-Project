@@ -60,7 +60,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
     {
         try
         {
-            RolUsuario rolUsuarioDeleted = GetEntity(rolUsuario.IdRolUsuario) ?? throw new UsuarioException("Rol de Usuario no encontrado");
+            RolUsuario rolUsuarioDeleted = GetEntity(rolUsuario.IdRolUsuario) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
             hotelContext.RolUsuarios.Remove(rolUsuarioDeleted);
             hotelContext.SaveChanges();
         }
