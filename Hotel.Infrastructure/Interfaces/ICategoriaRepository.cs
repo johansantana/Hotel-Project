@@ -1,8 +1,6 @@
-public interface ICategoriaRepository
-{
-    IEnumerable<Categoria> GetCategorias();
-    Categoria? GetCategoria(int IdCategoria);
-    void AddCategoria(Categoria categoria);
+using Hotel.Domain;
 
-    void DeleteCategoria(Categoria categoria);
+public interface ICategoriaRepository : IBaseRepository<Categoria>
+{
+
 }
