@@ -17,7 +17,7 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
     public virtual void Add(TEntity entity)
     {
         DbEntity.Add(entity);
-        hotelContext.SaveChanges();
+        hotelContext.SaveChangesAsync();
     }
 
     public virtual bool Exists(Func<TEntity, bool> filter)
@@ -43,11 +43,11 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
     public virtual void Update(TEntity entity)
     {
         DbEntity.Update(entity);
-        hotelContext.SaveChanges();
+        hotelContext.SaveChangesAsync();
     }
     public virtual void Remove(TEntity entity)
     {
         DbEntity.Remove(entity);
-        hotelContext.SaveChanges();
+        hotelContext.SaveChangesAsync();
     }
 }
