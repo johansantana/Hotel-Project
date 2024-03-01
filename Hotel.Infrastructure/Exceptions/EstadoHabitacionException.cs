@@ -6,4 +6,9 @@ public class EstadoHabitacionException : Exception
     {
 
     }
+
+    public EstadoHabitacionException(string message) : base(message)
+    {
+
+    }
 }

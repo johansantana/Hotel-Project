@@ -1,10 +1,8 @@
-﻿namespace Hotel.Infrastructure;
+﻿using Hotel.Domain.Repository;
 
-public interface IHabitacionRepository
+namespace Hotel.Infrastructure;
+
+public interface IHabitacionRepository : IBaseRepository<Habitacion>
 {
-    IEnumerable<Habitacion> GetHabitaciones();
-    Habitacion? GetHabitacion(int idHabitacion);
-    void AddHabitacion(Habitacion habitacion);
-    void DeleteHabitacion(Habitacion habitacion);
-    void UpdateHabitacion(Habitacion habitacion);
+
 }

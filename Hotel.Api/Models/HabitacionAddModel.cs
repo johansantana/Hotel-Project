@@ -1,6 +1,6 @@
-﻿namespace Hotel.Infrastructure;
+﻿namespace Hotel.Api.Models;
 
-public class Habitacion
+public class HabitacionAddModel
 {
     public int IdHabitacion { get; set; }
     public string? Numero { get; set; }

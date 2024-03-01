@@ -1,75 +1,72 @@
-﻿namespace Hotel.Infrastructure;
+﻿using Microsoft.Extensions.Logging;
 
-public class EstadoHabitacionRepository : BaseRepository, IEstadoHabitacionRepository
+namespace Hotel.Infrastructure;
+
+public class EstadoHabitacionRepository : BaseRepository<EstadoHabitacion>, IEstadoHabitacionRepository
 {
     private readonly HotelContext hotelContext;
+    private readonly ILogger<EstadoHabitacionRepository> logger;
 
-    public EstadoHabitacionRepository(HotelContext hotelContext)
+    public EstadoHabitacionRepository(HotelContext hotelContext, ILogger<EstadoHabitacionRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
+        this.logger = logger;
     }
 
-    public IEnumerable<EstadoHabitacion> GetEstadoHabitaciones()
+    public override List<EstadoHabitacion> GetEntities()
+    {
+        return base.GetEntities();
+    }
+
+    public override List<EstadoHabitacion> FindAll(Func<EstadoHabitacion, bool> filter)
+    {
+        return hotelContext.EstadoHabitaciones.Where(filter).ToList();
+    }
+
+    public override void Add(EstadoHabitacion estadoHabitacion)
     {
         try
         {
-            return hotelContext.EstadoHabitaciones;
-        }
-        catch (Exception)
-        {
-            throw new EstadoHabitacionException();
-        }
-    }
-
-    public EstadoHabitacion? GetEstadoHabitacion(int idEstadoHabitacion)
-    {
-        try
-        {
-            return hotelContext.EstadoHabitaciones
-                .FirstOrDefault(estadoHabitacion => estadoHabitacion.IdEstadoHabitacion == idEstadoHabitacion);
-        }
-        catch (Exception)
-        {
-            throw new EstadoHabitacionException();
-        }
-    }
-
-    public void AddEstadoHabitacion(EstadoHabitacion estadoHabitacion)
-    {
-        try
-        {
+            if (hotelContext.EstadoHabitaciones.Any(eh => eh.IdEstadoHabitacion == estadoHabitacion.IdEstadoHabitacion))
+            {
+                throw new EstadoHabitacionException("El estado de habitación se encuentra registrado.");
+            }
             hotelContext.EstadoHabitaciones.Add(estadoHabitacion);
-            hotelContext.SaveChangesAsync();
+            hotelContext.SaveChanges();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new EstadoHabitacionException();
-        }
-    }
-
-    public void UpdateEstadoHabitacion(EstadoHabitacion estadoHabitacion)
-    {
-        try
-        {
-            hotelContext.EstadoHabitaciones.Update(estadoHabitacion);
-            hotelContext.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            throw new EstadoHabitacionException();
+            logger.LogError("Error creando el estado de habitación: {}", ex.ToString());
         }
     }
 
-    public void DeleteEstadoHabitacion(EstadoHabitacion estadoHabitacion)
+    public override void Update(EstadoHabitacion estadoHabitacion)
     {
         try
         {
-            hotelContext.EstadoHabitaciones.Remove(estadoHabitacion);
-            hotelContext.SaveChangesAsync();
+            EstadoHabitacion estadoHabitacionUpdated = GetEntity(estadoHabitacion.IdEstadoHabitacion) ?? throw new EstadoHabitacionException("Estado de habitación no encontrado");
+            estadoHabitacionUpdated.Descripcion = estadoHabitacion.Descripcion;
+            estadoHabitacionUpdated.Estado = estadoHabitacion.Estado;
+            hotelContext.EstadoHabitaciones.Update(estadoHabitacionUpdated);
+            hotelContext.SaveChanges();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new EstadoHabitacionException();
+            logger.LogError("Error actualizando el estado de habitación: {}", ex.ToString());
+        }
+    }
+
+    public override void Remove(EstadoHabitacion estadoHabitacion)
+    {
+        try
+        {
+            EstadoHabitacion estadoHabitacionDeleted = GetEntity(estadoHabitacion.IdEstadoHabitacion) ?? throw new EstadoHabitacionException("Estado de habitación no encontrado");
+            hotelContext.EstadoHabitaciones.Remove(estadoHabitacionDeleted);
+            hotelContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error eliminando el estado de habitacion: {}", ex.ToString());
         }
     }
 }
