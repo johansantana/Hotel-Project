@@ -1,11 +1,14 @@
+<<<<<<< HEAD
 namespace Hotel.Infrastructure;
 using Hotel.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
+=======
+﻿namespace Hotel.Infrastructure;
+>>>>>>> parent of 941a29d (Implemente baseRepository y su interfaz ademas de refactorizar mi el codigo)
 
-namespace Hotel.Infrastructure;
-
-public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
+public class BaseRepository
 {
+<<<<<<< HEAD
     private readonly HotelContext hotelContext;
     private readonly DbSet<TEntity> DbEntity;
   
@@ -50,4 +53,7 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
         DbEntity.Remove(entity);
         hotelContext.SaveChangesAsync();
     }
+=======
+
+>>>>>>> parent of 941a29d (Implemente baseRepository y su interfaz ademas de refactorizar mi el codigo)
 }
