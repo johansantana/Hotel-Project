@@ -1,75 +1,74 @@
 ﻿namespace Hotel.Infrastructure;
+using Microsoft.Extensions.Logging;
 
-public class UsuarioRepository : BaseRepository, IUsuarioRepository
+public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
 {
     private readonly HotelContext hotelContext;
+    private readonly ILogger<UsuarioRepository> logger;
 
-    public UsuarioRepository(HotelContext hotelContext)
+    public UsuarioRepository(HotelContext hotelContext, ILogger<UsuarioRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
+        this.logger = logger;
     }
 
-    public IEnumerable<Usuario> GetUsuarios()
+    public override List<Usuario> GetEntities()
+    {
+        return base.GetEntities();
+    }
+
+    public override List<Usuario> FindAll(Func<Usuario, bool> filter)
+    {
+        return hotelContext.Usuarios.Where(filter).ToList();
+    }
+
+    public override void Add(Usuario usuario)
     {
         try
         {
-            return hotelContext.Usuarios;
-        }
-        catch (Exception)
-        {
-            throw new UsuarioException();
-        }
-    }
-
-    public Usuario? GetUsuario(int idUsuario)
-    {
-        try
-        {
-            return hotelContext.Usuarios
-                .FirstOrDefault(usuario => usuario.IdUsuario == idUsuario);
-        }
-        catch (Exception)
-        {
-            throw new UsuarioException();
-        }
-    }
-
-    public void AddUsuario(Usuario usuario)
-    {
-        try
-        {
+            if (hotelContext.Usuarios.Any(us => us.IdUsuario == usuario.IdUsuario))
+            {
+                throw new UsuarioException("El usuario se encuentra registrado");
+            }
             hotelContext.Usuarios.Add(usuario);
-            hotelContext.SaveChangesAsync();
+            hotelContext.SaveChanges();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new UsuarioException();
-        }
-    }
-
-    public void UpdateUsuario(Usuario usuario)
-    {
-        try
-        {
-            hotelContext.Usuarios.Update(usuario);
-            hotelContext.SaveChangesAsync();
-        }
-        catch (Exception)
-        {
-            throw new UsuarioException();
+            logger.LogError("Error creando el usuario: {}", ex.ToString());
         }
     }
 
-    public void DeleteUsuario(Usuario usuario)
+    public override void Update(Usuario usuario)
     {
         try
         {
-            hotelContext.Usuarios.Remove(usuario);
-            hotelContext.SaveChangesAsync();
+            Usuario usuarioUpdated = GetEntity(usuario.IdUsuario) ?? throw new UsuarioException("Usuario no encontrado");
+            usuarioUpdated.Clave = usuario.Clave;
+            usuarioUpdated.Correo = usuario.Correo;
+            usuarioUpdated.NombreCompleto = usuario.NombreCompleto;
+            usuarioUpdated.Estado = usuario.Estado;
+            usuarioUpdated.IdRolUsuario = usuario.IdRolUsuario;
+            hotelContext.Usuarios.Update(usuarioUpdated);
+            hotelContext.SaveChanges();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new UsuarioException();
+            logger.LogError("Error actualizando el usuario: {}", ex.ToString());
+        }
+    }
+
+    public override void Remove(Usuario usuario)
+    {
+        try
+        {
+            Usuario usuarioDeleted = GetEntity(usuario.IdUsuario) ?? throw new UsuarioException("Usuario no encontrado");
+            hotelContext.Usuarios.Remove(usuarioDeleted);
+            hotelContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Error eliminando el usuario: {}", ex.ToString());
         }
     }
 }

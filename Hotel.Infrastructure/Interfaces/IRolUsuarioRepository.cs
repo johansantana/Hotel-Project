@@ -1,10 +1,8 @@
-﻿namespace Hotel.Infrastructure;
+﻿using Hotel.Domain.Repository;
 
-public interface IRolUsuarioRepository
+namespace Hotel.Infrastructure;
+
+public interface IRolUsuarioRepository : IBaseRepository<RolUsuario>
 {
-    IEnumerable<RolUsuario> GetRolUsuarios();
-    RolUsuario? GetRolUsuario(int idRolUsuario);
-    void AddRolUsuario(RolUsuario rolUsuario);
-    void UpdateRolUsuario(RolUsuario rolUsuario);
-    void DeleteRolUsuario(RolUsuario rolUsuario);
+
 }
