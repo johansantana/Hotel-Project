@@ -4,5 +4,6 @@ public class CategoriaException : Exception
     {
         //logica para guardar expecion
         //Despes de guardar se envia por correo
+
     }
 }

@@ -1,6 +1,7 @@
 using Hotel.Infrastructure;
 using Microsoft.Extensions.Logging;
-
+using Hotel.Domain;
+using System.Linq;
 public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaRepository
 {
     private readonly HotelContext hotelContext;
@@ -20,7 +21,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
 
     public override List<Categoria> FindAll(Func<Categoria, bool> filter)
     {
-        return hotelContext.Categorias.Where(filter).ToList();
+        return hotelContext.Categoria.Where(filter).ToList();
 
     }
     public override void Update(Categoria categoria)
@@ -29,11 +30,11 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         {
             Categoria categoriaUpdated = GetEntity(categoria.IdCategoria);
 
-            categoriaUpdated.IdCategoria = categoria.IdCategoria;
+           // categoriaUpdated.IdCategoria = categoria.IdCategoria;
             categoriaUpdated.Descripcion = categoria.Descripcion;
             categoriaUpdated.Estado = categoria.Estado;
-            categoriaUpdated.FechaCreacion = categoria.FechaCreacion;
-            hotelContext.Categorias.Update(categoriaUpdated);
+           // categoriaUpdated.FechaCreacion = categoria.FechaCreacion;
+            hotelContext.Categoria.Update(categoriaUpdated);
 
             hotelContext.SaveChangesAsync();
         }
@@ -47,7 +48,11 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
     {
         try
         {
-            hotelContext.Categorias.Add(categoria);
+            if (hotelContext.Categoria.Any(ca => ca.IdCategoria == categoria.IdCategoria))
+            {
+                throw new CategoriaException("La categoria se encuentra registrada");
+            }
+            hotelContext.Categoria.Add(categoria);
             hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)

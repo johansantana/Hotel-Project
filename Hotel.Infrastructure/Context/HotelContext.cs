@@ -1,15 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using Hotel.Domain;
 namespace Hotel.Infrastructure;
 
 public class HotelContext : DbContext
 {
     // Cargar aqui los modelos
+    public HotelContext(DbContextOptions<HotelContext> options) : base(options)
+    {
 
-    public DbSet<Categoria> Categorias { get; set; }
+    }
+
+    public DbSet<Categoria> Categoria { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Hotel_DB");
+        optionsBuilder.UseSqlServer("Server=LAPTOP-QCIUVPFJ;Database=DBHotel;User ID=sa;Password=Alejandro23@#; TrustServerCertificate=true;");
     }
 }
