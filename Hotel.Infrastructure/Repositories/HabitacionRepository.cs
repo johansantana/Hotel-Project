@@ -15,7 +15,7 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
         {
             return hotelContext.Habitaciones;
         }
-        catch (Exception)
+        catch (HabitacionException)
         {
             throw new HabitacionException();
         }
@@ -28,7 +28,7 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
             return hotelContext.Habitaciones
                 .FirstOrDefault(habitacion => habitacion.IdHabitacion == idHabitacion);
         }
-        catch (Exception)
+        catch (HabitacionException)
         {
             throw new HabitacionException();
         }
@@ -42,7 +42,7 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
             hotelContext.Habitaciones.Add(habitacion);
             hotelContext.SaveChangesAsync();
         }
-        catch (Exception)
+        catch (HabitacionException)
         {
             throw new HabitacionException();
         }
@@ -55,7 +55,7 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
             hotelContext.Habitaciones.Update(habitacion);
             hotelContext.SaveChangesAsync();
         }
-        catch (Exception)
+        catch (HabitacionException)
         {
             throw new HabitacionException();
         }
@@ -68,7 +68,7 @@ public class HabitacionRepository : BaseRepository, IHabitacionRepository
             hotelContext.Habitaciones.Remove(habitacion);
             hotelContext.SaveChangesAsync();
         }
-        catch (Exception)
+        catch (HabitacionException)
         {
             throw new HabitacionException();
         }
