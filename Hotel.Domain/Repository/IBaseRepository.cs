@@ -1,4 +1,4 @@
-﻿namespace Hotel.Domain.Repository;
+namespace Hotel.Domain.Repository;
 
 public interface IBaseRepository<TEntity> where TEntity : class
 {
