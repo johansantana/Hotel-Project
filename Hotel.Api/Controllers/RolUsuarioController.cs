@@ -50,8 +50,8 @@ public class RolUsuarioController : ControllerBase
         this.rolUsuarioRepository.Update(rolUsuarioToUpdate);
     }
 
-    // DELETE api/<UsuarioController>/5
-    [HttpDelete("DeleteUsuario")]
+    // DELETE api/<RolUsuarioController>/5
+    [HttpDelete("DeleteRolUsuario")]
     public void Delete(int id)
     {
         var rolUsuarioDeleted = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");

@@ -10,6 +10,7 @@ builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(buil
 
 // Repositories.
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IRolUsuarioRepository, RolUsuarioRepository>();
 
 // App Services.
 builder.Services.AddControllers();
