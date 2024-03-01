@@ -1,7 +1,10 @@
-public class Categoria
+using System.ComponentModel.DataAnnotations;
+
+public class CategoriaModel
 {
-    public int IdCategoria { get; set; }
+    [Key]
+  
     public string? Descripcion { get; set; }
     public bool? Estado { get; set; }
-    public DateTime? FechaCreacion { get; set; } = new DateTime();
+
 }
