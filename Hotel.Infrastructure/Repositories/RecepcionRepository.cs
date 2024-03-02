@@ -10,10 +10,14 @@ public class RecepcionRepository : BaseRepository<Recepcion>, IRecepcionReposito
 
     public void CheckIn(Guest guest)
     {
+            Console.WriteLine($"{guest.Name} está checked in.");
+
     }
 
     public void CheckOut(Guest guest)
     {
+            Console.WriteLine($"{guest.Name} está checked out.");
+
     }
 
     public Reservation MakeReservation(Guest guest, DateTime checkInDate, DateTime checkOutDate)
