@@ -1,6 +1,6 @@
 namespace Hotel.Infrastructure;
 
-public interface IRecepcioRepository
+public interface IRecepcionRepository
 {
     void CheckIn(Guest guest);
     void CheckOut(Guest guest);
