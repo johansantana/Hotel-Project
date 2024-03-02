@@ -1,0 +1,21 @@
+namespace Hotel.Domain.Entities
+{
+    public class Recepcion : BaseEntity
+    {
+        
+        public DateTime FechaDeEntrada { get; set; } 
+        public DateTime? FechaDeSalida { get; set; } 
+        public new string? Estado { get; set; } 
+        public string? NombreDelHuesped { get; set; }
+        public string? ApellidoDelHuesped { get; set; }
+        public string? DocumentoIdentificacion { get; set; }
+
+        public void CheckIn()
+        {
+        }
+
+        public void CheckOut()
+        {
+        }
+    }
+}
