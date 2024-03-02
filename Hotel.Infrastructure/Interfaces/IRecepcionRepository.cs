@@ -1,8 +1,12 @@
-namespace Hotel.Infrastructure;
-
-public interface IRecepcionRepository
+namespace Hotel.Infrastructure.Interfaces
 {
-    void CheckIn(Guest guest);
-    void CheckOut(Guest guest);
-    Reservation MakeReservation(Guest guest, DateTime checkInDate, DateTime checkOutDate);
+    public interface IRecepcionRepository : IBaseRepository<Recepcion>
+    {
+        IEnumerable<Recepcion> GetRecepciones();
+        Recepcion? GetRecepcion(int idRecepcion);
+        void SaveRecepcion(Recepcion recepcion);
+        void RemoveRecepcion(Recepcion recepcion);
+        void UpdateRecepcion(Recepcion recepcion);
+        IEnumerable<Recepcion> FindRecepcionesByCriteria(Func<Recepcion, bool> criteria);
+    }
 }
