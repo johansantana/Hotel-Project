@@ -2,8 +2,6 @@ namespace Hotel.Infrastructure;
 using Hotel.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel.Infrastructure;
-
 public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
     private readonly HotelContext hotelContext;
@@ -14,6 +12,7 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
         this.hotelContext = hotelContext;
         this.DbEntity = hotelContext.Set<TEntity>();
     }
+
     public virtual void Add(TEntity entity)
     {
         DbEntity.Add(entity);
@@ -32,19 +31,20 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
 
     public virtual List<TEntity> GetEntities()
     {
-        return [.. DbEntity];
+        return DbEntity.ToList();
     }
 
-    public virtual TEntity GetEntity(int id)
+    public virtual TEntity? GetEntity(int id)
     {
         return DbEntity.Find(id);
     }
-  
+
     public virtual void Update(TEntity entity)
     {
         DbEntity.Update(entity);
         hotelContext.SaveChanges();
     }
+
     public virtual void Remove(TEntity entity)
     {
         DbEntity.Remove(entity);
