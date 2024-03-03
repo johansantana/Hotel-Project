@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hotel.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel.Infrastructure;
 
@@ -10,6 +11,9 @@ public class HotelContext : DbContext
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<RolUsuario> RolUsuarios { get; set; }
     public DbSet<Categoria> Categoria { get; set; }
+    public DbSet<Recepcion> Recepciones {get; set;}
+
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
