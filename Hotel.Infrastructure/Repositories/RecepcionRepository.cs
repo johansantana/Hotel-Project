@@ -2,7 +2,7 @@ using Hotel.Domain.Entities;
 
 namespace Hotel.Infrastructure.Repositories
 {
-    public class RecepcionRepository : IRecepcionRepository
+    public class RecepcionRepository :IBaseRepository, IRecepcionRepository
     {
         private readonly HotelContext _hotelContext;
 

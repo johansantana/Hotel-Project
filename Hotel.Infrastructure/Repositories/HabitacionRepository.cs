@@ -1,6 +1,8 @@
-﻿namespace Hotel.Infrastructure;
+﻿using Hotel.Domain.Repository;
 
-public class HabitacionRepository : BaseRepository, IHabitacionRepository
+namespace Hotel.Infrastructure;
+
+public class HabitacionRepository : IBaseRepository, IHabitacionRepository
 {
     private readonly HotelContext hotelContext;
 

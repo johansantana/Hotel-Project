@@ -1,6 +1,8 @@
-﻿namespace Hotel.Infrastructure;
+﻿using Hotel.Domain.Repository;
 
-public class EstadoHabitacionRepository : BaseRepository, IEstadoHabitacionRepository
+namespace Hotel.Infrastructure;
+
+public class EstadoHabitacionRepository : IBaseRepository, IEstadoHabitacionRepository
 {
     private readonly HotelContext hotelContext;
 
@@ -72,4 +74,8 @@ public class EstadoHabitacionRepository : BaseRepository, IEstadoHabitacionRepos
             throw new EstadoHabitacionException();
         }
     }
+}
+
+public interface IBaseRepository
+{
 }
