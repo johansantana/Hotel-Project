@@ -9,13 +9,5 @@ namespace Hotel.Domain.Entities
         public string? NombreDelHuesped { get; set; }
         public string? ApellidoDelHuesped { get; set; }
         public string? DocumentoIdentificacion { get; set; }
-
-        public void CheckIn()
-        {
-        }
-
-        public void CheckOut()
-        {
-        }
     }
 }
