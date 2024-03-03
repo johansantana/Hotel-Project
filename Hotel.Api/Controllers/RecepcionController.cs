@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Hotel.Infrastructure;
-using Hotel.Api.Models;
+
 
 
 namespace Hotel.Api.Controllers
@@ -58,16 +57,7 @@ namespace Hotel.Api.Controllers
         }
     }
 
-    public class Recepcion
-    {
-        public object? Id { get; internal set; }
-    }
-
-    public interface IRecepcionRepository
-    {
-        void AddRecepcion(Recepcion recepcion);
-        void DeleteRecepcion(object recepcionToDelete);
-        object GetRecepcion(int id);
-        object GetRecepciones();
-    }
+   public class Recepcion
+{
+    public int Id { get; set; }
 }
