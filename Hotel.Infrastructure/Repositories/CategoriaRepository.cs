@@ -30,10 +30,14 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         {
             Categoria categoriaUpdated = GetEntity(categoria.IdCategoria);
 
-           // categoriaUpdated.IdCategoria = categoria.IdCategoria;
+            if (categoriaUpdated is null)
+            {
+                throw new CategoriaException("la categoria no existe");
+            }
+                
+
             categoriaUpdated.Descripcion = categoria.Descripcion;
             categoriaUpdated.Estado = categoria.Estado;
-           // categoriaUpdated.FechaCreacion = categoria.FechaCreacion;
             hotelContext.Categoria.Update(categoriaUpdated);
 
             hotelContext.SaveChangesAsync();
@@ -52,6 +56,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
             {
                 throw new CategoriaException("La categoria se encuentra registrada");
             }
+
             hotelContext.Categoria.Add(categoria);
             hotelContext.SaveChangesAsync();
         }
@@ -65,8 +70,15 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         try
         {
             Categoria categoriaDeleted = GetEntity(categoria.IdCategoria);
-            hotelContext.Remove(categoriaDeleted);
-            hotelContext.SaveChangesAsync();
+
+            if (categoriaDeleted is null)
+            {
+              throw new CategoriaException("la categoria no existe");
+            }
+                 
+            
+            hotelContext.Categoria.Remove(categoriaDeleted);
+            hotelContext.SaveChanges();
         }
         catch (Exception ex)
         {

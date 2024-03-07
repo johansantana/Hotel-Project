@@ -1,6 +1,8 @@
-﻿using Hotel.Api.Models;
+﻿using Hotel.Api.Dtos.Categoria;
+using Hotel.Api.Models;
 using Hotel.Domain;
-using Hotel.Infrastructure;
+
+
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,7 +22,13 @@ namespace Hotel.Apii.Controllers
         [HttpGet("GetCategoria")]
         public IActionResult Get()
         {
-            var categoria = this.categoriaRepository.GetEntities();
+            var categoria = this.categoriaRepository.GetEntities().Select( cd => new CategoriaGetModel()
+            {
+                IdCategoria = cd.IdCategoria,
+                Descripcion = cd.Descripcion,
+                Estado = cd.Estado,
+                FechaCreacion = cd.FechaCreacion,
+            });
             return Ok(categoria);
         }
 
@@ -29,38 +37,52 @@ namespace Hotel.Apii.Controllers
         public IActionResult Get(int id)
         {
             var categoria = this.categoriaRepository.GetEntity(id);
-            return Ok(categoria);
+            CategoriaGetModel categoriaGetModel = new CategoriaGetModel()
+            {
+                IdCategoria = categoria.IdCategoria,
+                Descripcion = categoria.Descripcion,
+                Estado = categoria.Estado,
+                FechaCreacion = categoria.FechaCreacion,
+            };
+            return Ok(categoriaGetModel);
         }
 
         // POST api/<CategoriaController>
         [HttpPost("SaveCategoria")]
-        public void Post([FromBody] CategoriaAddModel categoriaAddModel)
+        public IActionResult Post([FromBody] CategoriaAddDto categoriaAddDto)
         {
             this.categoriaRepository.Add(new Categoria()
             {
-                Estado = categoriaAddModel.Estado,
-                Descripcion = categoriaAddModel.Descripcion,
-                FechaCreacion = categoriaAddModel.FechaCreacion
+                Estado = categoriaAddDto.Estado,
+                Descripcion = categoriaAddDto.Descripcion,
+                FechaCreacion = categoriaAddDto.FechaCreacion
             });
+            return Ok("Categoria guardada con exito");
         }
 
         // PUT api/<CategoriaController>/5
-        [HttpPut("UpdateCategoria")]
-        public void Put(int id, [FromBody] CategoriaModel categoriaModel)
+        [HttpPost("UpdateCategoria")]
+        public IActionResult Put([FromBody] CategoriaUpdateDto categoriaUpdateDto)
         {
-            var categoriaToUpdate = this.categoriaRepository.GetEntity(id);
+            this.categoriaRepository.Update(new Categoria()
+            {
+                IdCategoria = categoriaUpdateDto.IdCategoria,
+                Descripcion = categoriaUpdateDto.Descripcion,
+                Estado = categoriaUpdateDto.Estado,
 
-            categoriaToUpdate.Estado = categoriaModel.Estado;
-            categoriaToUpdate.Descripcion = categoriaModel.Descripcion;
-            this.categoriaRepository.Update(categoriaToUpdate);
+            });
+            return Ok("Categoria actualizada con exito");
         }
 
         // DELETE api/<CategoriaController>/5
         [HttpDelete("DeleteCategoria")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+
             var categoriaDeleted = categoriaRepository.GetEntity(id);
             this.categoriaRepository.Remove(categoriaDeleted);
+
+            return Ok("Categoria eliminada con exito");
         }
     }
 }
