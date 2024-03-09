@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
-using Hotel.Api.Models;
+using Hotel.Api.Dtos;
 
 namespace Hotel.Api.Controllers;
 
@@ -18,7 +18,7 @@ public class UsuarioController : ControllerBase
     [HttpGet("GetUsuario")]
     public IActionResult Get()
     {
-        var usuario = this.usuarioRepository.GetEntities();
+        var usuario = usuarioRepository.GetEntities();
         return Ok(usuario);
     }
 
@@ -26,43 +26,49 @@ public class UsuarioController : ControllerBase
     [HttpGet("GetUsuarioById")]
     public IActionResult Get(int id)
     {
-        var usuario = this.usuarioRepository.GetEntity(id);
+        var usuario = usuarioRepository.GetEntity(id);
         return Ok(usuario);
     }
 
     // POST api/<UsuarioController>
     [HttpPost("AddUsuario")]
-    public void Post([FromBody] UsuarioAddModel usuarioModel)
+    public IActionResult Post([FromBody] UsuarioAddDto usuarioAddDto)
     {
-        this.usuarioRepository.Add(new Usuario()
+        usuarioRepository.Add(new Usuario()
         {
-            NombreCompleto = usuarioModel.NombreCompleto,
-            Correo = usuarioModel.Correo,
-            Clave = usuarioModel.Clave,
-            Estado = usuarioModel.Estado,
-            IdRolUsuario = usuarioModel.IdRolUsuario
+            NombreCompleto = usuarioAddDto.NombreCompleto,
+            Correo = usuarioAddDto.Correo,
+            Clave = usuarioAddDto.Clave,
+            Estado = usuarioAddDto.Estado,
+            IdRolUsuario = usuarioAddDto.IdRolUsuario
         });
+
+        return Ok("Usuario creado");
     }
 
     // PUT api/<UsuarioController>/5
     [HttpPut("UpdateUsuario")]
-    public void Put(int id, [FromBody] UsuarioAddModel usuarioModel)
+    public IActionResult Put(int id, [FromBody] UsuarioUpdateDto usuarioUpdateDto)
     {
         var usuarioToUpdate = usuarioRepository.GetEntity(id) ?? throw new UsuarioException("Usuario no encontrado");
-        usuarioToUpdate.Clave = usuarioModel.Clave;
-        usuarioToUpdate.Correo = usuarioModel.Correo;
-        usuarioToUpdate.NombreCompleto = usuarioModel.NombreCompleto;
-        usuarioToUpdate.Estado = usuarioModel.Estado;
-        usuarioToUpdate.IdRolUsuario = usuarioModel.IdRolUsuario;
-        this.usuarioRepository.Update(usuarioToUpdate);
+        usuarioToUpdate.Clave = usuarioUpdateDto.Clave;
+        usuarioToUpdate.Correo = usuarioUpdateDto.Correo;
+        usuarioToUpdate.NombreCompleto = usuarioUpdateDto.NombreCompleto;
+        usuarioToUpdate.Estado = usuarioUpdateDto.Estado;
+        usuarioToUpdate.IdRolUsuario = usuarioUpdateDto.IdRolUsuario;
+        usuarioRepository.Update(usuarioToUpdate);
+
+        return Ok("Usuario actualizado");
     }
 
     // DELETE api/<UsuarioController>/5
     [HttpDelete("DeleteUsuario")]
-    public void Delete(int id)
+    public IActionResult Delete(int id)
     {
         var usuarioDeleted = usuarioRepository.GetEntity(id) ?? throw new UsuarioException("Usuario no encontrado");
-        this.usuarioRepository.Remove(usuarioDeleted);
+        usuarioRepository.Remove(usuarioDeleted);
+
+        return Ok("Usuario eliminado");
     }
 }
 

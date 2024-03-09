@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
-using Hotel.Api.Models;
+using Hotel.Api.Dtos;
 
 namespace Hotel.Api.Controllers;
 
@@ -31,7 +31,7 @@ public class RolUsuarioController : ControllerBase
 
     // POST api/<UsuarioController>
     [HttpPost("AddRolUsuario")]
-    public void Post([FromBody] RolUsuarioAddModel rolUsuarioModel)
+    public void Post([FromBody] RolUsuarioAddDto rolUsuarioModel)
     {
         this.rolUsuarioRepository.Add(new RolUsuario()
         {
@@ -42,7 +42,7 @@ public class RolUsuarioController : ControllerBase
 
     // PUT api/<RolUsuarioController>/5
     [HttpPut("UpdateRolUsuario")]
-    public void Put(int id, [FromBody] RolUsuarioAddModel rolUsuarioModel)
+    public void Put(int id, [FromBody] RolUsuarioUpdateDto rolUsuarioModel)
     {
         var rolUsuarioToUpdate = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
         rolUsuarioToUpdate.Descripcion = rolUsuarioModel.Descripcion;
