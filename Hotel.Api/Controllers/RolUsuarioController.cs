@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
 using Hotel.Api.Dtos;
+using Hotel.Api.Models;
 
 namespace Hotel.Api.Controllers;
 
@@ -17,7 +18,12 @@ public class RolUsuarioController : ControllerBase
     [HttpGet("GetRolUsuario")]
     public IActionResult Get()
     {
-        var rolUsuario = this.rolUsuarioRepository.GetEntities();
+        var rolUsuario = rolUsuarioRepository.GetEntities().Select(cd => new RolUsuarioGetModel()
+        {
+            IdRolUsuario = cd.IdRolUsuario,
+            Descripcion = cd.Descripcion,
+            Estado = cd.Estado
+        });
         return Ok(rolUsuario);
     }
 
@@ -25,36 +31,48 @@ public class RolUsuarioController : ControllerBase
     [HttpGet("GetRolUsuarioById")]
     public IActionResult Get(int id)
     {
-        var rolUsuario = this.rolUsuarioRepository.GetEntity(id);
-        return Ok(rolUsuario);
+        var rolUsuario = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
+        RolUsuarioGetModel rolUsuarioGetModel = new RolUsuarioGetModel()
+        {
+            IdRolUsuario = rolUsuario.IdRolUsuario,
+            Descripcion = rolUsuario.Descripcion,
+            Estado = rolUsuario.Estado
+        };
+        return Ok(rolUsuarioGetModel);
     }
 
     // POST api/<UsuarioController>
     [HttpPost("AddRolUsuario")]
-    public void Post([FromBody] RolUsuarioAddDto rolUsuarioModel)
+    public IActionResult Post([FromBody] RolUsuarioAddDto rolUsuarioModel)
     {
-        this.rolUsuarioRepository.Add(new RolUsuario()
+        rolUsuarioRepository.Add(new RolUsuario()
         {
             Descripcion = rolUsuarioModel.Descripcion,
             Estado = rolUsuarioModel.Estado
         });
+
+        return Ok("Rol de Usuario agregado");
     }
 
     // PUT api/<RolUsuarioController>/5
     [HttpPut("UpdateRolUsuario")]
-    public void Put(int id, [FromBody] RolUsuarioUpdateDto rolUsuarioModel)
+    public IActionResult Put(int id, [FromBody] RolUsuarioUpdateDto rolUsuarioModel)
     {
         var rolUsuarioToUpdate = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
         rolUsuarioToUpdate.Descripcion = rolUsuarioModel.Descripcion;
         rolUsuarioToUpdate.Estado = rolUsuarioModel.Estado;
-        this.rolUsuarioRepository.Update(rolUsuarioToUpdate);
+        rolUsuarioRepository.Update(rolUsuarioToUpdate);
+
+        return Ok("Rol de Usuario actualizado");
     }
 
     // DELETE api/<RolUsuarioController>/5
     [HttpDelete("DeleteRolUsuario")]
-    public void Delete(int id)
+    public IActionResult Delete(int id)
     {
         var rolUsuarioDeleted = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
-        this.rolUsuarioRepository.Remove(rolUsuarioDeleted);
+        rolUsuarioRepository.Remove(rolUsuarioDeleted);
+
+        return Ok("Rol de Usuario eliminado");
     }
 }
