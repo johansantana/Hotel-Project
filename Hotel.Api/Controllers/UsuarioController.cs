@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
 using Hotel.Api.Dtos;
+using Hotel.Api.Models;
 
 namespace Hotel.Api.Controllers;
 
@@ -18,7 +19,16 @@ public class UsuarioController : ControllerBase
     [HttpGet("GetUsuario")]
     public IActionResult Get()
     {
-        var usuario = usuarioRepository.GetEntities();
+        var usuario = usuarioRepository.GetEntities().Select(cd => new UsuarioGetModel()
+        {
+            IdUsuario = cd.IdUsuario,
+            NombreCompleto = cd.NombreCompleto,
+            Correo = cd.Correo,
+            IdRolUsuario = cd.IdRolUsuario,
+            Clave = cd.Clave,
+            Estado = cd.Estado,
+            FechaCreacion = cd.FechaCreacion,
+        });
         return Ok(usuario);
     }
 
@@ -26,8 +36,18 @@ public class UsuarioController : ControllerBase
     [HttpGet("GetUsuarioById")]
     public IActionResult Get(int id)
     {
-        var usuario = usuarioRepository.GetEntity(id);
-        return Ok(usuario);
+        var usuario = usuarioRepository.GetEntity(id) ?? throw new UsuarioException("Usuario no encontrado");
+        UsuarioGetModel usuarioGetModel = new UsuarioGetModel()
+        {
+            IdUsuario = usuario.IdUsuario,
+            NombreCompleto = usuario.NombreCompleto,
+            Correo = usuario.Correo,
+            IdRolUsuario = usuario.IdRolUsuario,
+            Clave = usuario.Clave,
+            Estado = usuario.Estado,
+            FechaCreacion = usuario.FechaCreacion,
+        };
+        return Ok(usuarioGetModel);
     }
 
     // POST api/<UsuarioController>
