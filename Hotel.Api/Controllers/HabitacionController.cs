@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
 using Hotel.Api.Models;
+using Hotel.Api.Dtos;
 
 namespace Hotel.Api.Controllers;
 
@@ -17,7 +18,18 @@ public class HabitacionController : ControllerBase
     [HttpGet("GetHabitaciones")]
     public IActionResult Get()
     {
-        var habitacion = habitacionRepository.GetEntities();
+        var habitacion = habitacionRepository.GetEntities().Select(cd => new HabitacionGetModel()
+        {
+            IdHabitacion = cd.IdHabitacion,
+            Numero = cd.Numero,
+            Detalle = cd.Detalle,
+            Precio = cd.Precio,
+            IdEstadoHabitacion = cd.IdEstadoHabitacion,
+            IdPiso = cd.IdPiso,
+            IdCategoria = cd.IdCategoria,
+            Estado = cd.Estado,
+            FechaCreacion = cd.FechaCreacion,
+        });
         return Ok(habitacion);
     }
 
@@ -25,13 +37,26 @@ public class HabitacionController : ControllerBase
     [HttpGet("GetHabitacionById")]
     public IActionResult Get(int id)
     {
-        var habitacion = habitacionRepository.GetEntity(id);
-        return Ok(habitacion);
+        var habitacion = habitacionRepository.GetEntity(id) ?? throw new HabitacionException("Habitación no encontrada");
+        HabitacionGetModel habitacionGetModel = new HabitacionGetModel()
+        {
+            IdHabitacion = habitacion.IdHabitacion,
+            Numero = habitacion.Numero,
+            Detalle = habitacion.Detalle,
+            Precio = habitacion.Precio,
+            IdEstadoHabitacion = habitacion.IdEstadoHabitacion,
+            IdPiso = habitacion.IdPiso,
+            IdCategoria = habitacion.IdCategoria,
+            Estado = habitacion.Estado,
+            FechaCreacion = habitacion.FechaCreacion,
+        };
+
+        return Ok(habitacionGetModel);
     }
 
     // POST api/<HabitacionController>
     [HttpPost("AddHabitacion")]
-    public void Post([FromBody] HabitacionAddModel habitacionModel)
+    public IActionResult Post([FromBody] HabitacionAddDto habitacionModel)
     {
         habitacionRepository.Add(new Habitacion()
         {
@@ -43,11 +68,13 @@ public class HabitacionController : ControllerBase
             IdCategoria = habitacionModel.IdCategoria,
             Estado = habitacionModel.Estado
         });
+
+        return Ok("Habitación agregada");
     }
 
     // PUT api/<HabitacionController>/5
     [HttpPut("UpdateHabitacion")]
-    public void Put(int id, [FromBody] HabitacionAddModel habitacionModel)
+    public IActionResult Put(int id, [FromBody] HabitacionUpdateDto habitacionModel)
     {
         var habitacionToUpdate = habitacionRepository.GetEntity(id) ?? throw new HabitacionException("Habitación no encontrada");
         habitacionToUpdate.Numero = habitacionModel.Numero;
@@ -57,14 +84,18 @@ public class HabitacionController : ControllerBase
         habitacionToUpdate.IdPiso = habitacionModel.IdPiso;
         habitacionToUpdate.IdCategoria = habitacionModel.IdCategoria;
         habitacionToUpdate.Estado = habitacionModel.Estado;
-        this.habitacionRepository.Update(habitacionToUpdate);
+        habitacionRepository.Update(habitacionToUpdate);
+
+        return Ok("Habitación actualizada");
     }
 
     // DELETE api/<HabitacionController>/5
     [HttpDelete("DeleteHabitacion")]
-    public void Delete(int id)
+    public IActionResult Delete(int id)
     {
         var habitacionDeleted = habitacionRepository.GetEntity(id) ?? throw new HabitacionException("Habitación no encontrada");
-        this.habitacionRepository.Remove(habitacionDeleted);
+        habitacionRepository.Remove(habitacionDeleted);
+
+        return Ok("Habitación eliminada");
     }
 }
