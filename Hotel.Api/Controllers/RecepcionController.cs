@@ -31,6 +31,7 @@ namespace Hotel.Api.Controllers
                 return NotFound();
             }
             return Ok(recepcion);
+            
         }
 
         [HttpPost]
