@@ -1,7 +1,11 @@
 ﻿namespace Hotel.Infrastructure;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
+[Table("Usuario")]
 public class Usuario
 {
+    [Key]
     public int IdUsuario { get; set; }
     public string? NombreCompleto { get; set; }
     public string? Correo { get; set; }

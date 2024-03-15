@@ -31,7 +31,7 @@ public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
                 throw new UsuarioException("El usuario se encuentra registrado");
             }
             hotelContext.Usuarios.Add(usuario);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -50,7 +50,7 @@ public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
             usuarioUpdated.Estado = usuario.Estado;
             usuarioUpdated.IdRolUsuario = usuario.IdRolUsuario;
             hotelContext.Usuarios.Update(usuarioUpdated);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -64,7 +64,7 @@ public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
         {
             Usuario usuarioDeleted = GetEntity(usuario.IdUsuario) ?? throw new UsuarioException("Usuario no encontrado");
             hotelContext.Usuarios.Remove(usuarioDeleted);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

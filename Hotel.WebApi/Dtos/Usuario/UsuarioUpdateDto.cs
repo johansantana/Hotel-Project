@@ -2,5 +2,4 @@
 
 public class UsuarioUpdateDto : UsuarioDtoBase
 {
-    public int IdUsuario { get; set; }
 }

@@ -2,5 +2,5 @@
 
 public class RolUsuarioAddDto : RolUsuarioDtoBase
 {
-    public DateTime? FechaCreacion { get; set; }
+    public DateTime FechaCreacion { get; set; }
 }

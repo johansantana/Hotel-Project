@@ -1,7 +1,9 @@
 ﻿namespace Hotel.Api.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class UsuarioGetModel
 {
+    [Key]
     public int IdUsuario { get; set; }
     public string? NombreCompleto { get; set; }
     public string? Correo { get; set; }

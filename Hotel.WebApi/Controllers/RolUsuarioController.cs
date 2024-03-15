@@ -15,7 +15,7 @@ public class RolUsuarioController : ControllerBase
         this.rolUsuarioRepository = rolUsuarioRepository;
     }
     // GET: api/<RolUsuarioController>
-    [HttpGet("GetRolUsuario")]
+    [HttpGet("GetRolUsuarios")]
     public IActionResult Get()
     {
         var rolUsuario = rolUsuarioRepository.GetEntities().Select(cd => new RolUsuarioGetModel()
@@ -43,12 +43,13 @@ public class RolUsuarioController : ControllerBase
 
     // POST api/<UsuarioController>
     [HttpPost("AddRolUsuario")]
-    public IActionResult Post([FromBody] RolUsuarioAddDto rolUsuarioModel)
+    public IActionResult Post([FromBody] RolUsuarioAddDto rolUsuarioDto)
     {
         rolUsuarioRepository.Add(new RolUsuario()
         {
-            Descripcion = rolUsuarioModel.Descripcion,
-            Estado = rolUsuarioModel.Estado
+            Descripcion = rolUsuarioDto.Descripcion,
+            Estado = rolUsuarioDto.Estado,
+            FechaCreacion = rolUsuarioDto.FechaCreacion
         });
 
         return Ok("Rol de Usuario agregado");
@@ -56,11 +57,11 @@ public class RolUsuarioController : ControllerBase
 
     // PUT api/<RolUsuarioController>/5
     [HttpPut("UpdateRolUsuario")]
-    public IActionResult Put(int id, [FromBody] RolUsuarioUpdateDto rolUsuarioModel)
+    public IActionResult Put(int id, [FromBody] RolUsuarioUpdateDto rolUsuarioDto)
     {
         var rolUsuarioToUpdate = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
-        rolUsuarioToUpdate.Descripcion = rolUsuarioModel.Descripcion;
-        rolUsuarioToUpdate.Estado = rolUsuarioModel.Estado;
+        rolUsuarioToUpdate.Descripcion = rolUsuarioDto.Descripcion;
+        rolUsuarioToUpdate.Estado = rolUsuarioDto.Estado;
         rolUsuarioRepository.Update(rolUsuarioToUpdate);
 
         return Ok("Rol de Usuario actualizado");

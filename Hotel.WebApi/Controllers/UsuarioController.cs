@@ -16,7 +16,7 @@ public class UsuarioController : ControllerBase
         this.usuarioRepository = usuarioRepository;
     }
     // GET: api/<UsuarioController>
-    [HttpGet("GetUsuario")]
+    [HttpGet("GetUsuarios")]
     public IActionResult Get()
     {
         var usuario = usuarioRepository.GetEntities().Select(cd => new UsuarioGetModel()
@@ -60,7 +60,9 @@ public class UsuarioController : ControllerBase
             Correo = usuarioAddDto.Correo,
             Clave = usuarioAddDto.Clave,
             Estado = usuarioAddDto.Estado,
-            IdRolUsuario = usuarioAddDto.IdRolUsuario
+            IdRolUsuario = usuarioAddDto.IdRolUsuario,
+            FechaCreacion = usuarioAddDto.FechaCreacion,
+
         });
 
         return Ok("Usuario creado");

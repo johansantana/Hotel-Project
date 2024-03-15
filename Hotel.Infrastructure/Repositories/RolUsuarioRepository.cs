@@ -32,7 +32,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
                 throw new RolUsuarioException("El rol de usuario se encuentra registrado");
             }
             hotelContext.RolUsuarios.Add(rolUsuario);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -48,7 +48,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
             rolUsuarioUpdated.Descripcion = rolUsuario.Descripcion;
             rolUsuarioUpdated.Estado = rolUsuario.Estado;
             hotelContext.RolUsuarios.Update(rolUsuarioUpdated);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -62,7 +62,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
         {
             RolUsuario rolUsuarioDeleted = GetEntity(rolUsuario.IdRolUsuario) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
             hotelContext.RolUsuarios.Remove(rolUsuarioDeleted);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
