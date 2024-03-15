@@ -32,7 +32,7 @@ public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepos
                 throw new HabitacionException("La habitación se encuentra registrada");
             }
             hotelContext.Habitaciones.Add(habitacion);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -53,7 +53,7 @@ public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepos
             habitacionToUpdate.IdCategoria = habitacion.IdCategoria;
             habitacionToUpdate.Estado = habitacion.Estado;
             hotelContext.Habitaciones.Update(habitacionToUpdate);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -67,7 +67,7 @@ public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepos
         {
             Habitacion habitacionToDelete = GetEntity(habitacion.IdHabitacion) ?? throw new HabitacionException("Habitación no encontrada");
             hotelContext.Habitaciones.Remove(habitacionToDelete);
-            hotelContext.SaveChanges();
+            hotelContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

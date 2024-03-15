@@ -15,7 +15,7 @@ public class EstadoHabitacionController : ControllerBase
         this.estadoHabitacionRepository = estadoHabitacionRepository;
     }
     // GET: api/<EstadoHabitacionController>
-    [HttpGet("GetEstadoHabitacion")]
+    [HttpGet("GetEstadoHabitaciones")]
     public IActionResult Get()
     {
         var estadoHabitacion = estadoHabitacionRepository.GetEntities().Select(cd => new EstadoHabitacionGetModel()
@@ -48,10 +48,17 @@ public class EstadoHabitacionController : ControllerBase
     [HttpPost("AddEstadoHabitacion")]
     public IActionResult Post([FromBody] EstadoHabitacionAddDto estadoHabitacionModel)
     {
+        if (estadoHabitacionModel.Id == 0)
+        {
+            return BadRequest("El Id del estado de habitación no puede ser 0");
+        }
+
         estadoHabitacionRepository.Add(new EstadoHabitacion()
         {
+            IdEstadoHabitacion = estadoHabitacionModel.Id,
             Descripcion = estadoHabitacionModel.Descripcion,
-            Estado = estadoHabitacionModel.Estado
+            Estado = estadoHabitacionModel.Estado,
+            FechaCreacion = estadoHabitacionModel.FechaCreacion
         });
 
         return Ok("Estado de Habitación agregado");
@@ -59,7 +66,7 @@ public class EstadoHabitacionController : ControllerBase
 
     // PUT api/<EstadoHabitacionController>/5
     [HttpPut("UpdateEstadoHabitacion")]
-    public IActionResult Put(int id, [FromBody] EstadoHabitacionAddDto estadoHabitacionModel)
+    public IActionResult Put(int id, [FromBody] EstadoHabitacionUpdateDto estadoHabitacionModel)
     {
         var estadoHabitacionToUpdate = estadoHabitacionRepository.GetEntity(id) ?? throw new EstadoHabitacionException("Estado de Habitación no encontrado");
         estadoHabitacionToUpdate.Descripcion = estadoHabitacionModel.Descripcion;

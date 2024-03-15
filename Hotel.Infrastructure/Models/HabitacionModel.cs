@@ -1,11 +1,16 @@
 ﻿namespace Hotel.Infrastructure;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
+// coloca el nombre de la tabla
+[Table("Habitacion")]
 public class Habitacion
 {
+    [Key]
     public int IdHabitacion { get; set; }
     public string? Numero { get; set; }
     public string? Detalle { get; set; }
-    public float? Precio { get; set; }
+    public decimal? Precio { get; set; }
     public int IdEstadoHabitacion { get; set; }
     public int IdPiso { get; set; }
     public int IdCategoria { get; set; }

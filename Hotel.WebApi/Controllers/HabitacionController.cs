@@ -66,7 +66,8 @@ public class HabitacionController : ControllerBase
             IdEstadoHabitacion = habitacionModel.IdEstadoHabitacion,
             IdPiso = habitacionModel.IdPiso,
             IdCategoria = habitacionModel.IdCategoria,
-            Estado = habitacionModel.Estado
+            Estado = habitacionModel.Estado,
+            FechaCreacion = habitacionModel.FechaCreacion
         });
 
         return Ok("Habitación agregada");

@@ -2,5 +2,6 @@
 
 public class EstadoHabitacionAddDto : EstadoHabitacionDtoBase
 {
-    public DateTime? FechaCreacion { get; set; }
+    public int Id { get; set; }
+    public DateTime FechaCreacion { get; set; }
 }

@@ -33,7 +33,7 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
         return [.. DbEntity];
     }
 
-    public virtual TEntity GetEntity(int id)
+    public virtual TEntity? GetEntity(int id)
     {
         return DbEntity.Find(id);
     }
