@@ -16,11 +16,12 @@ namespace Hotel.Aplication.Service
         public LoggerAdapter<CategoriaService> _Logger { get; set; }  //Hacer abstraccion (Patron adapter)
         public ICategoriaRepository categoriaRepository { get; set; }
         public CategoriaValidaciones categoriaValidaciones { get; set; }
-        public CategoriaService(LoggerAdapter<CategoriaService> logger, ICategoriaRepository categoriaRe, CategoriaValidaciones categoriaValidaciones) 
+        public CategoriaService(LoggerAdapter<CategoriaService> logger, ICategoriaRepository categoriaRe) 
         {
        
             _Logger = logger;
             categoriaRepository = categoriaRe;
+            this.categoriaValidaciones = new CategoriaValidaciones(_Logger);
         }
         //Cambiar CategoriaDeletedDto
         public  ServiceResult<CategoriaDeleteDto> DeleteEntity(int id)
@@ -30,6 +31,10 @@ namespace Hotel.Aplication.Service
                 //Validaciones
                 //id no nulo
                 categoriaValidaciones.ValidacionesDelete(result, id);
+                if (!result.Success)
+                {
+                    return result;
+                }
 
                 var categoriaDeleted = categoriaRepository.GetEntity(id);
                 this.categoriaRepository.Remove(categoriaDeleted);
@@ -103,6 +108,11 @@ namespace Hotel.Aplication.Service
                 //Validaciones
                 //Descripcion no nulo
                 categoriaValidaciones.ValidacionesAdd(result, categoriaAddDto);
+                if (!result.Success)
+                {
+                    return result;
+                }
+
 
                 this.categoriaRepository.Add(new Categoria()
                 {
@@ -132,6 +142,11 @@ namespace Hotel.Aplication.Service
             try
             {
                 categoriaValidaciones.ValidacionesUpdate(result, categoriaUpdateDto);
+                if (!result.Success)
+                {
+                    return result;
+                }
+
                 this.categoriaRepository.Update(new Categoria()
                 {
                     IdCategoria = categoriaUpdateDto.IdCategoria,
