@@ -1,40 +1,51 @@
 using Hotel.Domain.Entities;
+using Hotel.Domain.Repository;
+using Hotel.Infrastructure.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Hotel.Infrastructure.Repositories
 {
-    public class RecepcionRepository :IBaseRepository, IRecepcionRepository
+    public class RecepcionRepository : BaseRepository<Recepcion>, IRecepcionRepository
     {
-        private readonly HotelContext _hotelContext;
-
-        public RecepcionRepository(HotelContext hotelContext)
+        public RecepcionRepository(HotelContext hotelContext) : base(hotelContext)
         {
-            _hotelContext = hotelContext;
         }
 
-        public void AddRecepcion(Recepcion recepcion)
+        public new List<Recepcion> GetEntities()
         {
-            _hotelContext.Recepciones.Add(recepcion);
-            _hotelContext.SaveChanges();
+            return base.GetEntities();
         }
 
-        public void DeleteRecepcion(Recepcion recepcion)
+        public new Recepcion? GetEntity(int id)
         {
-            _hotelContext.Recepciones.Remove(recepcion);
-            _hotelContext.SaveChanges();
+            return base.GetEntity(id);
         }
 
-        public Recepcion? GetRecepcion(int id)
+        public new void Add(Recepcion entity)
         {
-            return _hotelContext.Recepciones.FirstOrDefault(r => r.Id == id);
+            base.Add(entity);
         }
 
-        public IEnumerable<Recepcion> GetRecepciones()
+        public new void Update(Recepcion entity)
         {
-            return _hotelContext.Recepciones.ToList();
+            base.Update(entity);
         }
-    }
 
-    public interface IRecepcionRepository
-    {
+        public new void Remove(Recepcion entity)
+        {
+            base.Remove(entity);
+        }
+
+        public new List<Recepcion> FindAll(Func<Recepcion, bool> filter)
+        {
+            return base.FindAll(filter);
+        }
+
+        public new bool Exists(Func<Recepcion, bool> filter)
+        {
+            return base.Exists(filter);
+        }
     }
 }

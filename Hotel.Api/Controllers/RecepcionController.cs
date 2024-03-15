@@ -56,8 +56,21 @@ namespace Hotel.Api.Controllers
             return NoContent();
         }
     }
+}
 
    public class Recepcion
 {
     public int Id { get; set; }
+}
+
+
+ public interface IRecepcionRepository
+{
+    void AddRecepcion(Recepcion recepcion);
+    void DeleteRecepcion(int id);
+        void DeleteRecepcion(Recepcion recepcionToDelete);
+        Recepcion? GetRecepcion(int id);
+    IEnumerable<Recepcion> GetRecepciones();
+
+
 }
