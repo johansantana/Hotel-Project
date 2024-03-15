@@ -10,7 +10,7 @@ namespace Hotel.Aplication.Exceptions.Validaciones
 {
     public class CategoriaValidaciones
     {
-        public LoggerAdapter<CategoriaService> logger { get; set; }
+        private LoggerAdapter<CategoriaService> logger { get; set; }
         public CategoriaValidaciones(LoggerAdapter<CategoriaService> logger )
         {
             this.logger = logger;
@@ -22,7 +22,8 @@ namespace Hotel.Aplication.Exceptions.Validaciones
             {
             result.Success = false;
             result.Message = "La descripcion no puede estar vacia";
-             throw new CategoriaServiceException(result.Message, logger);
+            logger.LogWarning(result.Message);
+            return result.Success;
             }
             return result.Success;
         }
@@ -32,13 +33,15 @@ namespace Hotel.Aplication.Exceptions.Validaciones
             {
                 result.Success = false;
                 result.Message = "La descripcion no puede estar vacia";
-                throw new CategoriaServiceException(result.Message, logger);
+                logger.LogWarning(result.Message);
+                return result.Success;
             }
             if (categoria.IdCategoria <= 0)
             {
                 result.Success = false;
                 result.Message = "El id no puede ser menor que 0";
-                throw new CategoriaServiceException(result.Message, logger);
+                logger.LogWarning(result.Message);
+                return result.Success;
             }
             return result.Success;
 
@@ -49,7 +52,8 @@ namespace Hotel.Aplication.Exceptions.Validaciones
             {
                 result.Success = false;
                 result.Message = "El id no puede ser menor que 0";
-                throw new CategoriaServiceException(result.Message, logger);
+                logger.LogWarning(result.Message);
+                return result.Success;
             }
             return result.Success;
 
