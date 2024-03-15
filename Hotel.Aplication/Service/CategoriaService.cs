@@ -1,28 +1,35 @@
-﻿using Hotel.Aplication.Contracts;
+﻿using Hotel.Aplication.Contracts.Categoria;
 using Hotel.Aplication.Core;
 using Hotel.Aplication.Dtos.Categoria;
+using Hotel.Aplication.Exceptions.Categoria;
+using Hotel.Aplication.Exceptions.Validaciones;
 using Hotel.Aplication.Models.Categoria;
 using Hotel.Domain;
-using Microsoft.Extensions.Logging;
+using Hotel.Infrastructure.LoggerAdapter;
+
 
 
 namespace Hotel.Aplication.Service
 {
     public class CategoriaService : ICategoriaService
     {
-        public ILogger<CategoriaService> Logger { get; set; }  //Hacer abstraccion (Patron adapter)
+        public LoggerAdapter<CategoriaService> _Logger { get; set; }  //Hacer abstraccion (Patron adapter)
         public ICategoriaRepository categoriaRepository { get; set; }
-        public CategoriaService(ILogger<CategoriaService> logger, ICategoriaRepository categoriaRe) 
+        public CategoriaValidaciones categoriaValidaciones { get; set; }
+        public CategoriaService(LoggerAdapter<CategoriaService> logger, ICategoriaRepository categoriaRe, CategoriaValidaciones categoriaValidaciones) 
         {
        
-            Logger = logger;
+            _Logger = logger;
             categoriaRepository = categoriaRe;
         }
         //Cambiar CategoriaDeletedDto
-        public ServiceResult<CategoriaDeleteDto> DeleteEntity(int id)
+        public  ServiceResult<CategoriaDeleteDto> DeleteEntity(int id)
         {
             ServiceResult<CategoriaDeleteDto> result = new ServiceResult<CategoriaDeleteDto>();
             try {
+                //Validaciones
+                //id no nulo
+                categoriaValidaciones.ValidacionesDelete(result, id);
 
                 var categoriaDeleted = categoriaRepository.GetEntity(id);
                 this.categoriaRepository.Remove(categoriaDeleted);
@@ -31,13 +38,15 @@ namespace Hotel.Aplication.Service
             catch (Exception ex){
                 result.Success = false;
                 result.Message = "Error borrando la categoria";
-                this.Logger.LogError(result.Message, ex.ToString());
+               // this._Logger.LogError(result.Message );
+                //return result;
+              throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
             }
 
             return result;
         }
 
-        public ServiceResult<List<CategoriaGetModel>> GetEntities()
+        public  ServiceResult<List<CategoriaGetModel>> GetEntities()
         {
             ServiceResult<List<CategoriaGetModel>> result = new ServiceResult<List<CategoriaGetModel>>();
             try
@@ -54,13 +63,14 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error obteniendo las categorias";
-                this.Logger.LogError(result.Message, ex.ToString());
+                //_Logger.LogError(result.Message + ex.ToString());
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
             }
             
             return result;
         }
 
-        public ServiceResult<CategoriaGetModel> GetEntty(int id)
+        public  ServiceResult<CategoriaGetModel> GetEntty(int id)
         {
             ServiceResult<CategoriaGetModel> result = new ServiceResult<CategoriaGetModel>();
             try {
@@ -78,17 +88,21 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error obteniendo la categoria";
-                this.Logger.LogError(result.Message, ex.ToString());
+                //_Logger.LogError(result.Message + ex.ToString());
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
 
             }
             return result;
         }
 
-        public ServiceResult<CategoriaAddDto> SaveEntity(CategoriaAddDto categoriaAddDto)
+        public  ServiceResult<CategoriaAddDto> SaveEntity(CategoriaAddDto categoriaAddDto)
         {
             ServiceResult<CategoriaAddDto> result = new ServiceResult<CategoriaAddDto>();
             try {
                 //Hacer validaciones
+                //Validaciones
+                //Descripcion no nulo
+                categoriaValidaciones.ValidacionesAdd(result, categoriaAddDto);
 
                 this.categoriaRepository.Add(new Categoria()
                 {
@@ -101,17 +115,23 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error guardando la categoria";
-                this.Logger.LogError(result.Message, ex.ToString());
+                //_Logger.LogError(result.Message + ex.ToString());
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
             }
             return result;
         }
 
-        public ServiceResult<CategoriaUpdateDto> UpdateEntity(CategoriaUpdateDto categoriaUpdateDto)
+        public  ServiceResult<CategoriaUpdateDto> UpdateEntity(CategoriaUpdateDto categoriaUpdateDto)
         {
             ServiceResult<CategoriaUpdateDto> result = new ServiceResult<CategoriaUpdateDto>();
 
             //hacer validaciones
-            try {
+            //Validaciones
+            //id no nulo
+            //Deccripcion no nulo
+            try
+            {
+                categoriaValidaciones.ValidacionesUpdate(result, categoriaUpdateDto);
                 this.categoriaRepository.Update(new Categoria()
                 {
                     IdCategoria = categoriaUpdateDto.IdCategoria,
@@ -124,9 +144,12 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error actualizando la categoria";
-                this.Logger.LogError(result.Message, ex.ToString());
+                //_Logger.LogError(result.Message + ex.ToString());
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger );
             }
             return result;
         }
+
+
     }
 }

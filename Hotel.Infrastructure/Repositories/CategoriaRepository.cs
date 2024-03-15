@@ -1,17 +1,16 @@
 using Hotel.Infrastructure;
-using Microsoft.Extensions.Logging;
 using Hotel.Domain;
-using System.Linq;
+using Hotel.Infrastructure.LoggerAdapter;
 public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaRepository
 {
-    private readonly HotelContext hotelContext;
-    private readonly ILogger<CategoriaRepository> logger;
+    private readonly HotelContext hotelContext; 
+    private readonly LoggerAdapter<CategoriaRepository> _logger; // loger es el adaptador, el cliente es Categoria repository y el targer es CategoriaException
     //Realizar abstraccion de esta interfaz 
 
-    public CategoriaRepository(HotelContext hotelContext, ILogger<CategoriaRepository> logger) : base(hotelContext)
+    public CategoriaRepository(HotelContext hotelContext, LoggerAdapter<CategoriaRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
-        this.logger = logger;
+        this._logger = logger;
     }
     public override List<Categoria> GetEntities()
     {
@@ -21,8 +20,16 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
 
     public override List<Categoria> FindAll(Func<Categoria, bool> filter)
     {
-        return hotelContext.Categoria.Where(filter).ToList();
+        List<Categoria> listDeCategorias;
+        try { 
 
+          listDeCategorias = hotelContext.Categoria.Where(filter).ToList();
+          return listDeCategorias;
+        }
+        catch (Exception ex){
+          throw new CategoriaException("Error obteniendo las categorias" + ex.ToString(), _logger);
+        }
+        
     }
     public override void Update(Categoria categoria)
     {
@@ -32,7 +39,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
 
             if (categoriaUpdated is null)
             {
-                throw new CategoriaException("la categoria no existe");
+                throw new CategoriaException("la categoria no existe", _logger);
             }
                 
 
@@ -44,7 +51,10 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         }
         catch (Exception ex)
         {
-            logger.LogError("Error actualizando la categoria", ex.ToString());
+           // _logger.LogError("Error actualizando la categoria" + ex.ToString());
+            throw new CategoriaException("Error actualizando la categoria" + ex.ToString(), _logger);
+            
+           
         }
 
     }
@@ -54,7 +64,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         {
             if (hotelContext.Categoria.Any(ca => ca.IdCategoria == categoria.IdCategoria))
             {
-                throw new CategoriaException("La categoria se encuentra registrada");
+                throw new CategoriaException("La categoria se encuentra registrada", _logger);
             }
 
             hotelContext.Categoria.Add(categoria);
@@ -62,7 +72,8 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         }
         catch (Exception ex)
         {
-            logger.LogError("Error Creando la categoria", ex.ToString());
+            //_logger.LogError("Error Creando la categoria" + ex.ToString());
+            throw  new CategoriaException("La categoria se encuentra registrada" + ex.ToString(), _logger);
         }
     }
     public override void Remove(Categoria categoria)
@@ -73,7 +84,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
 
             if (categoriaDeleted is null)
             {
-              throw new CategoriaException("la categoria no existe");
+              throw new CategoriaException("la categoria no existe", _logger);
             }
                  
             
@@ -82,7 +93,8 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
         }
         catch (Exception ex)
         {
-            logger.LogError("Error eliminando la categoria", ex.ToString());
+            //_logger.LogError("Error eliminando la categoria" );
+            throw new CategoriaException("la categoria no existe"+ ex.ToString(), _logger);
         }
     }
 
