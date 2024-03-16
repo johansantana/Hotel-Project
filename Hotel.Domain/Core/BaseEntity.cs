@@ -1,6 +1,6 @@
 ﻿namespace Hotel.Domain;
 
-public abstract class BaseEntity
+public class BaseEntity 
 {
     public BaseEntity()
     {

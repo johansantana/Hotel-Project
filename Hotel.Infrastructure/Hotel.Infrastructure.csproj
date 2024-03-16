@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -22,7 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Hotel.Domain\Hotel.Domain.csproj" />
+    <ProjectReference Include="C:\Users\adors\Downloads\proyecto\Hotel\Hotel.Domain\Hotel.Domain.csproj" />
+  </ItemGroup>
+
+ <ItemGroup>
+    <ProjectReference Include="C:\Users\adors\Downloads\proyecto\Hotel\Hotel.Api\Hotel.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
