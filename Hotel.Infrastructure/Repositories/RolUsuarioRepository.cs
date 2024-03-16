@@ -5,9 +5,9 @@ namespace Hotel.Infrastructure;
 public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepository
 {
     private readonly HotelContext hotelContext;
-    private readonly ILogger<RolUsuarioRepository> logger;
+    private readonly LoggerAdapter<RolUsuarioRepository> logger;
 
-    public RolUsuarioRepository(HotelContext hotelContext, ILogger<RolUsuarioRepository> logger) : base(hotelContext)
+    public RolUsuarioRepository(HotelContext hotelContext, LoggerAdapter<RolUsuarioRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
         this.logger = logger;
@@ -36,7 +36,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
         }
         catch (Exception ex)
         {
-            logger.LogError("Error creando el rol de usuario: {}", ex.ToString());
+            throw new RolUsuarioException("Error creando el rol de usuario. " + ex.ToString(), logger);
         }
     }
 
@@ -52,7 +52,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
         }
         catch (Exception ex)
         {
-            logger.LogError("Error actualizando el rol de usuario: {}", ex.ToString());
+            throw new RolUsuarioException("Error actualizando el rol de usuario. " + ex.ToString(), logger);
         }
     }
 
@@ -66,7 +66,7 @@ public class RolUsuarioRepository : BaseRepository<RolUsuario>, IRolUsuarioRepos
         }
         catch (Exception ex)
         {
-            logger.LogError("Error eliminando el rol de usuario: {}", ex.ToString());
+            throw new RolUsuarioException("Error eliminando el rol de usuario. " + ex.ToString(), logger);
         }
     }
 }

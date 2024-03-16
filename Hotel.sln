@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Ioc", "Hotel.Ioc\Hote
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.WebApi", "Hotel.WebApi\Hotel.WebApi.csproj", "{E512E228-9A42-4675-BE15-FA8EE758C1CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Application", "Hotel.Application\Hotel.Application.csproj", "{5999379E-D602-48AE-A848-61DA7E2AB280}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{E512E228-9A42-4675-BE15-FA8EE758C1CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E512E228-9A42-4675-BE15-FA8EE758C1CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E512E228-9A42-4675-BE15-FA8EE758C1CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5999379E-D602-48AE-A848-61DA7E2AB280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5999379E-D602-48AE-A848-61DA7E2AB280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5999379E-D602-48AE-A848-61DA7E2AB280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5999379E-D602-48AE-A848-61DA7E2AB280}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

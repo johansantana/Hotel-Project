@@ -62,7 +62,6 @@ public class UsuarioController : ControllerBase
             Estado = usuarioAddDto.Estado,
             IdRolUsuario = usuarioAddDto.IdRolUsuario,
             FechaCreacion = usuarioAddDto.FechaCreacion,
-
         });
 
         return Ok("Usuario creado");

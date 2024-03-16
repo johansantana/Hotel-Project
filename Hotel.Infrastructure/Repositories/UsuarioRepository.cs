@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
 {
     private readonly HotelContext hotelContext;
-    private readonly ILogger<UsuarioRepository> logger;
+    private readonly LoggerAdapter<UsuarioRepository> logger;
 
-    public UsuarioRepository(HotelContext hotelContext, ILogger<UsuarioRepository> logger) : base(hotelContext)
+    public UsuarioRepository(HotelContext hotelContext, LoggerAdapter<UsuarioRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
         this.logger = logger;
@@ -35,7 +35,7 @@ public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
         }
         catch (Exception ex)
         {
-            logger.LogError("Error creando el usuario: {}", ex.ToString());
+            throw new UsuarioException("Error creando el usuario. " + ex.ToString(), logger);
         }
     }
 
@@ -54,7 +54,7 @@ public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
         }
         catch (Exception ex)
         {
-            logger.LogError("Error actualizando el usuario: {}", ex.ToString());
+            throw new UsuarioException("Error actualizando el usuario. " + ex.ToString(), logger);
         }
     }
 
@@ -68,7 +68,7 @@ public class UsuarioRepository : BaseRepository<Usuario>, IUsuarioRepository
         }
         catch (Exception ex)
         {
-            logger.LogError("Error eliminando el usuario: {}", ex.ToString());
+            throw new UsuarioException("Error eliminando el usuario. " + ex.ToString(), logger);
         }
     }
 }
