@@ -35,7 +35,7 @@ public class RolUsuarioService : IRolUsuarioService
         catch (Exception ex)
         {
             result.Success = false;
-            throw new RolUsuarioServiceException("Error obteniendo los usuarios. " + ex.Message, logger);
+            throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
         }
         return result;
     }
@@ -46,19 +46,19 @@ public class RolUsuarioService : IRolUsuarioService
 
         try
         {
-            var usuario = rolUsuarioRepository.GetEntity(rolUsuarioId) ?? throw new RolUsuarioServiceException("Rol de usuario no encontrado");
+            var rolUsuario = rolUsuarioRepository.GetEntity(rolUsuarioId) ?? throw new RolUsuarioServiceException("Rol de usuario no encontrado.");
             result.Data = new RolUsuarioGetModel()
             {
-                IdRolUsuario = usuario.IdRolUsuario,
-                Estado = usuario.Estado,
-                FechaCreacion = usuario.FechaCreacion,
-                Descripcion = usuario.Descripcion
+                IdRolUsuario = rolUsuario.IdRolUsuario,
+                Estado = rolUsuario.Estado,
+                FechaCreacion = rolUsuario.FechaCreacion,
+                Descripcion = rolUsuario.Descripcion
             };
         }
         catch (Exception ex)
         {
             result.Success = false;
-            throw new RolUsuarioServiceException("Error obteniendo el usuario. " + ex.Message, logger);
+            throw new RolUsuarioServiceException("Error obteniendo el rol de usuario. " + ex.Message, logger);
         }
 
         return result;
@@ -81,13 +81,13 @@ public class RolUsuarioService : IRolUsuarioService
             if (rolUsuarioRepository.Exists(us => us.Descripcion == rolUsuario.Descripcion))
             {
                 result.Success = false;
-                throw new RolUsuarioServiceException("El rol de usuario ya se encuentra registrado");
+                throw new RolUsuarioServiceException("El rol de usuario ya se encuentra registrado.");
             }
         }
         catch (Exception ex)
         {
             result.Success = false;
-            throw new RolUsuarioServiceException("Error guardando el rol de usuario, " + ex.Message, logger);
+            throw new RolUsuarioServiceException("Error guardando el rol de usuario. " + ex.Message, logger);
         }
 
         return result;
@@ -101,20 +101,20 @@ public class RolUsuarioService : IRolUsuarioService
         {
             result.Data = rolUsuario;
 
-            var usuarioToUpdate = rolUsuarioRepository.GetEntity(rolUsuarioId);
-            if (usuarioToUpdate == null)
+            var rolUsuarioToUpdate = rolUsuarioRepository.GetEntity(rolUsuarioId);
+            if (rolUsuarioToUpdate == null)
             {
                 result.Success = false;
-                throw new RolUsuarioServiceException("Rol de usuario no encontrado");
+                throw new RolUsuarioServiceException("Rol de usuario no encontrado.");
             }
-            usuarioToUpdate.Estado = rolUsuario.Estado;
-            rolUsuarioRepository.Update(usuarioToUpdate);
+            rolUsuarioToUpdate.Estado = rolUsuario.Estado;
+            rolUsuarioRepository.Update(rolUsuarioToUpdate);
 
         }
         catch (Exception ex)
         {
             result.Success = false;
-            throw new RolUsuarioServiceException("Error actualizando el rol de usuario " + ex.Message, logger);
+            throw new RolUsuarioServiceException("Error actualizando el rol de usuario. " + ex.Message, logger);
         }
 
         return result;
@@ -134,20 +134,20 @@ public class RolUsuarioService : IRolUsuarioService
                 return result;
             }
 
-            var usuarioDeleted = rolUsuarioRepository.GetEntity(rolUsuarioId);
+            var rolUsuarioDeleted = rolUsuarioRepository.GetEntity(rolUsuarioId);
 
-            if (usuarioDeleted == null)
+            if (rolUsuarioDeleted == null)
             {
                 result.Success = false;
-                throw new RolUsuarioServiceException("Usuario no encontrado");
+                throw new RolUsuarioServiceException("Rol de usuario no encontrado.");
             }
 
-            rolUsuarioRepository.Remove(usuarioDeleted);
+            rolUsuarioRepository.Remove(rolUsuarioDeleted);
         }
         catch (Exception ex)
         {
             result.Success = false;
-            throw new RolUsuarioServiceException("Error eliminando el rol de usuario " + ex.Message, logger);
+            throw new RolUsuarioServiceException("Error eliminando el rol de usuario. " + ex.Message, logger);
         }
 
         return result;

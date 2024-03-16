@@ -50,7 +50,7 @@ public class UsuarioService : IUsuarioService
 
         try
         {
-            var usuario = usuarioRepository.GetEntity(usuarioId) ?? throw new UsuarioServiceException("Usuario no encontrado");
+            var usuario = usuarioRepository.GetEntity(usuarioId) ?? throw new UsuarioServiceException("Usuario no encontrado.");
             result.Data = new UsuarioGetModel()
             {
                 IdUsuario = usuario.IdUsuario,
@@ -99,13 +99,13 @@ public class UsuarioService : IUsuarioService
             if (usuarioRepository.Exists(us => us.Correo == usuario.Correo))
             {
                 result.Success = false;
-                throw new UsuarioServiceException("El usuario ya se encuentra registrado");
+                throw new UsuarioServiceException("El usuario ya se encuentra registrado.");
             }
         }
         catch (Exception ex)
         {
             result.Success = false;
-            throw new UsuarioServiceException("Error guardando el usuario, " + ex.Message, logger);
+            throw new UsuarioServiceException("Error guardando el usuario. " + ex.Message, logger);
         }
 
         return result;
@@ -132,7 +132,7 @@ public class UsuarioService : IUsuarioService
             if (usuarioToUpdate == null)
             {
                 result.Success = false;
-                throw new UsuarioServiceException("Usuario no encontrado");
+                throw new UsuarioServiceException("Usuario no encontrado.");
             }
 
             usuarioToUpdate.Clave = usuario.Clave;
@@ -146,7 +146,7 @@ public class UsuarioService : IUsuarioService
         catch (Exception ex)
         {
             result.Success = false;
-            throw new UsuarioServiceException("Error actualizando el usuario " + ex.Message, logger);
+            throw new UsuarioServiceException("Error actualizando el usuario. " + ex.Message, logger);
         }
 
         return result;
@@ -171,7 +171,7 @@ public class UsuarioService : IUsuarioService
             if (usuarioDeleted == null)
             {
                 result.Success = false;
-                throw new UsuarioServiceException("Usuario no encontrado");
+                throw new UsuarioServiceException("Usuario no encontrado.");
             }
 
             usuarioRepository.Remove(usuarioDeleted);
@@ -179,7 +179,7 @@ public class UsuarioService : IUsuarioService
         catch (Exception ex)
         {
             result.Success = false;
-            throw new UsuarioServiceException("Error eliminando el usuario " + ex.Message, logger);
+            throw new UsuarioServiceException("Error eliminando el usuario. " + ex.Message, logger);
         }
 
         return result;
