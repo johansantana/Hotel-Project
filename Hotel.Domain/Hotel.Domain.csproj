@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Repository\" />
+        <ProjectReference Include= "C:\Users\adors\Downloads\proyecto\Hotel\Hotel.Infrastructure\Hotel.Infrastructure.csproj" />
+
   </ItemGroup>
 
 </Project>
