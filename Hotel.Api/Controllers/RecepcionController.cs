@@ -1,11 +1,12 @@
+using Hotel.Api.Dtos.Recepcion;
+using Hotel.Domain;
 using Microsoft.AspNetCore.Mvc;
-
-
+using System;
 
 namespace Hotel.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class RecepcionController : ControllerBase
     {
         private readonly IRecepcionRepository _recepcionRepository;
@@ -15,34 +16,74 @@ namespace Hotel.Api.Controllers
             _recepcionRepository = recepcionRepository ?? throw new ArgumentNullException(nameof(recepcionRepository));
         }
 
-        [HttpGet]
-        public IActionResult GetRecepciones()
+        [HttpPost]
+        public IActionResult AddRecepcion([FromBody] RecepcionCreateDto createDto)
         {
-            var recepciones = _recepcionRepository.GetRecepciones();
-            return Ok(recepciones);
+            if (createDto == null)
+            {
+                return BadRequest("Datos de entrada inválidos");
+            }
+
+            var nuevaRecepcion = new Recepcion
+            {
+                NombreDelHuesped = createDto.NombreDelHuesped,
+                ApellidoDelHuesped = createDto.ApellidoDelHuesped,
+                DocumentoIdentificacion = createDto.DocumentoIdentificacion,
+                FechaDeEntrada = createDto.FechaDeEntrada,
+            };
+
+            try
+            {
+                _recepcionRepository.Create(nuevaRecepcion);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error al guardar la recepción");
+            }
+
+            return CreatedAtAction(nameof(GetRecepcionById), new { id = nuevaRecepcion.Id }, nuevaRecepcion);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetRecepcion(int id)
+        public IActionResult GetRecepcionById(int id)
         {
             var recepcion = _recepcionRepository.GetRecepcion(id);
             if (recepcion == null)
             {
-                return NotFound();
+                return NotFound("Recepción no encontrada");
             }
-            return Ok(recepcion);
-            
-        }
 
-        [HttpPost]
-        public IActionResult CreateRecepcion(Recepcion recepcion)
-        {
-            _recepcionRepository.AddRecepcion(recepcion);
-            return CreatedAtAction(nameof(GetRecepcion), new { id = recepcion.Id }, recepcion);
+            return Ok(recepcion);
         }
 
         [HttpPut("{id}")]
-       
+        public IActionResult UpdateRecepcion(int id, [FromBody] RecepcionUpdateDto updateDto)
+        {
+            if (updateDto == null || id != updateDto.Id)
+            {
+                return BadRequest("Datos de entrada inválidos");
+            }
+
+            var recepcionToUpdate = _recepcionRepository.GetRecepcion(id);
+            if (recepcionToUpdate == null)
+            {
+                return NotFound("Recepción no encontrada para actualizar");
+            }
+
+            recepcionToUpdate.FechaDeSalida = updateDto.FechaDeSalida;
+            recepcionToUpdate.Estado = updateDto.Estado;
+
+            try
+            {
+                _recepcionRepository.Update(recepcionToUpdate);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error al actualizar la recepción");
+            }
+
+            return NoContent();
+        }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteRecepcion(int id)
@@ -50,28 +91,27 @@ namespace Hotel.Api.Controllers
             var recepcionToDelete = _recepcionRepository.GetRecepcion(id);
             if (recepcionToDelete == null)
             {
-                return NotFound();
+                return NotFound("Recepción no encontrada para eliminar");
             }
 
-            _recepcionRepository.DeleteRecepcion(recepcionToDelete);
+            try
+            {
+                _recepcionRepository.Remove(recepcionToDelete);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error al eliminar la recepción");
+            }
+
             return NoContent();
         }
     }
-}
 
-   public class Recepcion
-{
-    public int Id { get; set; }
-}
-
-
- public interface IRecepcionRepository
-{
-    void AddRecepcion(Recepcion recepcion);
-    void DeleteRecepcion(int id);
-        void DeleteRecepcion(Recepcion recepcionToDelete);
-        Recepcion? GetRecepcion(int id);
-    IEnumerable<Recepcion> GetRecepciones();
-
-
+    public interface IRecepcionRepository
+    {
+        Recepcion GetRecepcion(int id);
+        void Create(Recepcion recepcion);
+        void Remove(Recepcion recepcionToDelete);
+        void Update(Recepcion recepcionToUpdate);
+    }
 }

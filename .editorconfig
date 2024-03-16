@@ -1,0 +1,12 @@
+[*.cs]
+
+# CS8974: Converting method group to non-delegate type
+dotnet_diagnostic.CS8974.severity = silent
+[*.cs]
+
+# Default severity for analyzer diagnostics with category 'Style'
+dotnet_analyzer_diagnostic.category-Style.severity = none
+[*.cs]
+
+# IDE0005: Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = none
