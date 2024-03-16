@@ -1,4 +1,4 @@
-﻿namespace Hotel.Api.Dtos;
+﻿namespace Hotel.Application.Dtos;
 
 public record EstadoHabitacionDtoBase : DtoBase
 {

@@ -5,9 +5,9 @@ namespace Hotel.Infrastructure;
 public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepository
 {
     private readonly HotelContext hotelContext;
-    private readonly ILogger<HabitacionRepository> logger;
+    private readonly LoggerAdapter<HabitacionRepository> logger;
 
-    public HabitacionRepository(HotelContext hotelContext, ILogger<HabitacionRepository> logger) : base(hotelContext)
+    public HabitacionRepository(HotelContext hotelContext, LoggerAdapter<HabitacionRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
         this.logger = logger;
@@ -36,7 +36,7 @@ public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepos
         }
         catch (Exception ex)
         {
-            logger.LogError("Error creando la habitación: {}", ex.ToString());
+            throw new HabitacionException("Error creando la habitación. " + ex.ToString(), logger);
         }
     }
 
@@ -57,7 +57,7 @@ public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepos
         }
         catch (Exception ex)
         {
-            logger.LogError("Error actualizando el rol de usuario: {}", ex.ToString());
+            throw new HabitacionException("Error actualizando la habitación. " + ex.ToString(), logger);
         }
     }
 
@@ -71,7 +71,7 @@ public class HabitacionRepository : BaseRepository<Habitacion>, IHabitacionRepos
         }
         catch (Exception ex)
         {
-            logger.LogError("Error eliminando la habitación: {}", ex.ToString());
+            throw new HabitacionException("Error eliminando la habitación. " + ex.ToString(), logger);
         }
     }
 }

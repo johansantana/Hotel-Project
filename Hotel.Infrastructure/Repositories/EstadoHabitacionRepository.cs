@@ -5,9 +5,9 @@ namespace Hotel.Infrastructure;
 public class EstadoHabitacionRepository : BaseRepository<EstadoHabitacion>, IEstadoHabitacionRepository
 {
     private readonly HotelContext hotelContext;
-    private readonly ILogger<EstadoHabitacionRepository> logger;
+    private readonly LoggerAdapter<EstadoHabitacionRepository> logger;
 
-    public EstadoHabitacionRepository(HotelContext hotelContext, ILogger<EstadoHabitacionRepository> logger) : base(hotelContext)
+    public EstadoHabitacionRepository(HotelContext hotelContext, LoggerAdapter<EstadoHabitacionRepository> logger) : base(hotelContext)
     {
         this.hotelContext = hotelContext;
         this.logger = logger;
@@ -36,7 +36,7 @@ public class EstadoHabitacionRepository : BaseRepository<EstadoHabitacion>, IEst
         }
         catch (Exception ex)
         {
-            logger.LogError("Error creando el estado de habitación: {}", ex.ToString());
+            throw new EstadoHabitacionException("Error creando el estado de habitación. " + ex.ToString(), logger);
         }
     }
 
@@ -52,7 +52,7 @@ public class EstadoHabitacionRepository : BaseRepository<EstadoHabitacion>, IEst
         }
         catch (Exception ex)
         {
-            logger.LogError("Error actualizando el estado de habitación: {}", ex.ToString());
+            throw new EstadoHabitacionException("Error actualizando el estado de habitación. " + ex.ToString(), logger);
         }
     }
 
@@ -66,7 +66,7 @@ public class EstadoHabitacionRepository : BaseRepository<EstadoHabitacion>, IEst
         }
         catch (Exception ex)
         {
-            logger.LogError("Error eliminando el estado de habitacion: {}", ex.ToString());
+            throw new EstadoHabitacionException("Error eliminando el estado de habitación. " + ex.ToString(), logger);
         }
     }
 }
