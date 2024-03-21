@@ -5,11 +5,8 @@ using Hotel.Aplication.Models.Categoria;
 
 namespace Hotel.Aplication.Contracts.Categoria
 {
-    public interface ICategoriaService : IBaseService<CategoriaGetModel, CategoriaAddDto, CategoriaUpdateDto, CategoriaDeleteDto>
+    public interface ICategoriaService : IBaseService<CategoriaGetModel, CategoriaAddDto, CategoriaUpdateDto>
     {
-        //ServiceResult<List<CategoriaGetModel>> GetCategorias();
 
-        //ServiceResult<CategoriaGetModel> GetCategoria(int IdCategoria);
-        //ServiceResult<CategoriaAddDto> 
     }
 }

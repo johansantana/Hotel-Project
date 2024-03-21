@@ -1,5 +1,7 @@
 ﻿using Hotel.Api.Dtos.Categoria;
 using Hotel.Api.Models;
+using Hotel.Aplication.Contracts.Categoria;
+using Hotel.Aplication.Dtos.Categoria;
 using Hotel.Domain;
 
 
@@ -13,65 +15,61 @@ namespace Hotel.Apii.Controllers
     [ApiController]
     public class CategoriaController : ControllerBase
     {
-        private readonly ICategoriaRepository categoriaRepository;
-        public CategoriaController(ICategoriaRepository categoriaRepository)
+        private readonly ICategoriaService categoriaService;
+        public CategoriaController(ICategoriaService categoriaService)
         {
-            this.categoriaRepository = categoriaRepository;
+            this.categoriaService = categoriaService;
         }
         // GET: api/<CategoriaController>
         [HttpGet("GetCategoria")]
         public IActionResult Get()
         {
-            var categoria = this.categoriaRepository.GetEntities().Select( cd => new CategoriaGetModel()
+            var result = this.categoriaService.GetEntities();
+            if (!result.Success)
             {
-                IdCategoria = cd.IdCategoria,
-                Descripcion = cd.Descripcion,
-                Estado = cd.Estado,
-                FechaCreacion = cd.FechaCreacion,
-            });
-            return Ok(categoria);
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // GET api/<CategoriaController>/5
         [HttpGet("GetCategoriaById")]
         public IActionResult Get(int id)
         {
-            var categoria = this.categoriaRepository.GetEntity(id);
-            CategoriaGetModel categoriaGetModel = new CategoriaGetModel()
+
+           var result  = this.categoriaService.GetEntity(id);
+            if (!result.Success)
             {
-                IdCategoria = categoria.IdCategoria,
-                Descripcion = categoria.Descripcion,
-                Estado = categoria.Estado,
-                FechaCreacion = categoria.FechaCreacion,
-            };
-            return Ok(categoriaGetModel);
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // POST api/<CategoriaController>
         [HttpPost("SaveCategoria")]
-        public IActionResult Post([FromBody] CategoriaAddDto categoriaAddDto)
+        public IActionResult Post([FromBody] Aplication.Dtos.Categoria.CategoriaAddDto categoriaAddDto)
         {
-            this.categoriaRepository.Add(new Categoria()
+  
+            var result = this.categoriaService.SaveEntity(categoriaAddDto);
+            if (!result.Success)
             {
-                Estado = categoriaAddDto.Estado,
-                Descripcion = categoriaAddDto.Descripcion,
-                FechaCreacion = categoriaAddDto.FechaCreacion
-            });
-            return Ok("Categoria guardada con exito");
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // PUT api/<CategoriaController>/5
         [HttpPost("UpdateCategoria")]
-        public IActionResult Put([FromBody] CategoriaUpdateDto categoriaUpdateDto)
+        public IActionResult Put([FromBody] Aplication.Dtos.Categoria.CategoriaUpdateDto categoriaUpdateDto)
         {
-            this.categoriaRepository.Update(new Categoria()
-            {
-                IdCategoria = categoriaUpdateDto.IdCategoria,
-                Descripcion = categoriaUpdateDto.Descripcion,
-                Estado = categoriaUpdateDto.Estado,
 
-            });
-            return Ok("Categoria actualizada con exito");
+            var result = this.categoriaService.UpdateEntity(categoriaUpdateDto);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+            
         }
 
         // DELETE api/<CategoriaController>/5
@@ -79,10 +77,12 @@ namespace Hotel.Apii.Controllers
         public IActionResult Delete(int id)
         {
 
-            var categoriaDeleted = categoriaRepository.GetEntity(id);
-            this.categoriaRepository.Remove(categoriaDeleted);
-
-            return Ok("Categoria eliminada con exito");
+            var result = this.categoriaService.DeleteEntity(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

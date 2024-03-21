@@ -12,13 +12,13 @@ namespace Hotel.Infrastructure.LoggerAdapter
     {
         private readonly ILogger<T> _logger;
 
-        public CategoriaException CategoriaException { get; private set; }
         
 
         public LoggerAdapter(ILogger<T> logger)
         {
             _logger = logger;
         }
+
         public void LogCritical(string message)
         {
             _logger.LogCritical(message);

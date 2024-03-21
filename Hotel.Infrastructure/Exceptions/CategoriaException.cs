@@ -9,7 +9,7 @@ public class CategoriaException : Exception
     private readonly string email = "email";
     private readonly string password = "password"; // lo puse asi porque no subire info de ese calibre a github
 
-    public CategoriaException(string mensaje, LoggerAdapter<CategoriaRepository> logger) : base(mensaje)
+    public CategoriaException(string mensaje, ILoggerAdapter<CategoriaRepository> logger) : base(mensaje)
     {
         //logica para guardar expecion
         //Despes de guardar se envia por correo

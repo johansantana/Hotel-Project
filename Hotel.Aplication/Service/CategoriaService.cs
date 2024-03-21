@@ -2,7 +2,6 @@
 using Hotel.Aplication.Core;
 using Hotel.Aplication.Dtos.Categoria;
 using Hotel.Aplication.Exceptions.Categoria;
-using Hotel.Aplication.Exceptions.Validaciones;
 using Hotel.Aplication.Models.Categoria;
 using Hotel.Domain;
 using Hotel.Infrastructure.LoggerAdapter;
@@ -13,39 +12,39 @@ namespace Hotel.Aplication.Service
 {
     public class CategoriaService : ICategoriaService
     {
-        public LoggerAdapter<CategoriaService> _Logger { get; set; }  //Hacer abstraccion (Patron adapter)
+
+         public ILoggerAdapter<CategoriaService> _logger {  get; set; }
         public ICategoriaRepository categoriaRepository { get; set; }
-        public CategoriaValidaciones categoriaValidaciones { get; set; }
-        public CategoriaService(LoggerAdapter<CategoriaService> logger, ICategoriaRepository categoriaRe) 
+        public CategoriaService(ILoggerAdapter<CategoriaService> logger, ICategoriaRepository categoriaRe) 
         {
-       
-            _Logger = logger;
+
+            _logger = logger;
             categoriaRepository = categoriaRe;
-            this.categoriaValidaciones = new CategoriaValidaciones(_Logger);
         }
-        //Cambiar CategoriaDeletedDto
-        public  ServiceResult<CategoriaDeleteDto> DeleteEntity(int id)
+
+        public  ServiceResult<CategoriaGetModel> DeleteEntity(int id)
         {
-            ServiceResult<CategoriaDeleteDto> result = new ServiceResult<CategoriaDeleteDto>();
+            ServiceResult<CategoriaGetModel> result = new ServiceResult<CategoriaGetModel>();
             try {
                 //Validaciones
                 //id no nulo
-                categoriaValidaciones.ValidacionesDelete(result, id);
-                if (!result.Success)
+                var idValid = ValidID( id);
+
+                if (!idValid.Success)
                 {
+                    result.Success = idValid.Success;
+                    result.Message =  idValid.Message;
                     return result;
                 }
-
                 var categoriaDeleted = categoriaRepository.GetEntity(id);
                 this.categoriaRepository.Remove(categoriaDeleted);
+                result.Message = "categoria Eliminada con exito";
 
             }
             catch (Exception ex){
                 result.Success = false;
                 result.Message = "Error borrando la categoria";
-               // this._Logger.LogError(result.Message );
-                //return result;
-              throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
+               throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
             }
 
             return result;
@@ -64,18 +63,20 @@ namespace Hotel.Aplication.Service
                     FechaCreacion = cd.FechaCreacion,
 
                 }).ToList();
-            }catch (Exception ex)
+                result.Message = "categorias recuperadas con exito";
+            }
+            catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Error obteniendo las categorias";
                 //_Logger.LogError(result.Message + ex.ToString());
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
+               throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
             }
             
             return result;
         }
 
-        public  ServiceResult<CategoriaGetModel> GetEntty(int id)
+        public  ServiceResult<CategoriaGetModel> GetEntity(int id)
         {
             ServiceResult<CategoriaGetModel> result = new ServiceResult<CategoriaGetModel>();
             try {
@@ -87,63 +88,64 @@ namespace Hotel.Aplication.Service
                     Estado = categoria.Estado,
                     FechaCreacion = categoria.FechaCreacion,
                 };
-              
+                result.Message = "categoria recuperada con exito con exito";
+
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Error obteniendo la categoria";
-                //_Logger.LogError(result.Message + ex.ToString());
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
 
             }
             return result;
         }
 
-        public  ServiceResult<CategoriaAddDto> SaveEntity(CategoriaAddDto categoriaAddDto)
+        public ServiceResult<CategoriaGetModel> SaveEntity(CategoriaAddDto categoriaAddDto)
         {
-            ServiceResult<CategoriaAddDto> result = new ServiceResult<CategoriaAddDto>();
+            ServiceResult<CategoriaGetModel> result = new ServiceResult<CategoriaGetModel>();
             try {
-                //Hacer validaciones
-                //Validaciones
-                //Descripcion no nulo
-                categoriaValidaciones.ValidacionesAdd(result, categoriaAddDto);
-                if (!result.Success)
+                var resultIsValid = IsValid(categoriaAddDto);
+
+                
+                if (!resultIsValid.Success)
                 {
+                    result.Success = resultIsValid.Success;
+                    result.Message = resultIsValid.Message;
                     return result;
                 }
 
-
-                this.categoriaRepository.Add(new Categoria()
+                    this.categoriaRepository.Add(new Categoria()
                 {
                     Estado = categoriaAddDto.Estado,
                     Descripcion = categoriaAddDto.Descripcion,
                     FechaCreacion = categoriaAddDto.FechaCreacion
                 });
+
+                result.Message = "categoria guardada con exito";
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Error guardando la categoria";
-                //_Logger.LogError(result.Message + ex.ToString());
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger);
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
             }
             return result;
         }
 
-        public  ServiceResult<CategoriaUpdateDto> UpdateEntity(CategoriaUpdateDto categoriaUpdateDto)
+        public  ServiceResult<CategoriaGetModel> UpdateEntity(CategoriaUpdateDto categoriaUpdateDto)
         {
-            ServiceResult<CategoriaUpdateDto> result = new ServiceResult<CategoriaUpdateDto>();
+            ServiceResult<CategoriaGetModel> result = new ServiceResult<CategoriaGetModel>();
 
-            //hacer validaciones
-            //Validaciones
-            //id no nulo
-            //Deccripcion no nulo
             try
             {
-                categoriaValidaciones.ValidacionesUpdate(result, categoriaUpdateDto);
-                if (!result.Success)
+                var resultIsValid = IsValid(categoriaUpdateDto);
+                var idValid = ValidID(categoriaUpdateDto.IdCategoria);
+                
+                if (!resultIsValid.Success || !idValid.Success)
                 {
+                    result.Success = !resultIsValid.Success ? resultIsValid.Success : idValid.Success;
+                    result.Message = !resultIsValid.Success? resultIsValid.Message : idValid.Message;
                     return result;
                 }
 
@@ -154,13 +156,46 @@ namespace Hotel.Aplication.Service
                     Estado = categoriaUpdateDto.Estado,
 
                 });
+                result.Message = "categoria actualizada con exito";
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.Message = "Error actualizando la categoria";
-                //_Logger.LogError(result.Message + ex.ToString());
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _Logger );
+                throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
+            }
+            return result;
+        }
+
+        private ServiceResult<string> IsValid(CategoriaDtoBase categoriaDtoBase)
+        {
+            ServiceResult<string> result = new ServiceResult<string>();
+            if (string.IsNullOrEmpty(categoriaDtoBase.Descripcion))
+            {
+                result.Success = false;
+                result.Message = "La descripcion no puede estar vacia";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+            if (categoriaDtoBase.Descripcion.Length > 200)
+            {
+                result.Success = false;
+                result.Message = "La descripcion no puede estar vacia";
+                _logger.LogWarning(result.Message);
+                return result;
+            }
+            return result;
+        }
+
+        private ServiceResult<int> ValidID( int id)
+        {
+            ServiceResult<int> result = new ServiceResult<int>();
+            if (!categoriaRepository.Exists(cd => cd.IdCategoria == id))
+            {
+                result.Success = false;
+                result.Message = "La categoria no existe";
+                _logger.LogWarning(result.Message);
+                return result;
             }
             return result;
         }

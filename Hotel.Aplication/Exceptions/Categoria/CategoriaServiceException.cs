@@ -1,22 +1,21 @@
-﻿using Hotel.Aplication.Core;
+﻿
 using Hotel.Aplication.Service;
 using Hotel.Infrastructure.LoggerAdapter;
 using System.Net.Mail;
 using System.Net;
-using Hotel.Aplication.Dtos.Categoria;
 
 namespace Hotel.Aplication.Exceptions.Categoria
 {
     public class CategoriaServiceException : Exception
     {
-        private readonly LoggerAdapter<CategoriaService> _logger;
+        private readonly ILoggerAdapter<CategoriaService> _logger;
         private readonly string[] receptores = { "", "", "", "", "" };
         private readonly string email = "email";
         private readonly string password = "password"; // lo puse asi porque no subire datos como esos a github
         
 
 
-        public CategoriaServiceException(string message, LoggerAdapter<CategoriaService> logger) : base(message)
+        public CategoriaServiceException(string message, ILoggerAdapter<CategoriaService> logger) : base(message)
         {
             //Grabar el log y enviar mensaje por correo de error
             
@@ -49,7 +48,7 @@ namespace Hotel.Aplication.Exceptions.Categoria
                     message.Subject = "Error en la aplicación";
                     message.Body = errorMessage;
 
-                    // Enviar el correo electrónico
+
                     client.Send(message);
                 }
 
