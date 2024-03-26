@@ -1,12 +1,7 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
-using Hotel.Domain;
-using Hotel.Web.Models;
-using Microsoft.AspNetCore.Http;
+using Hotel.Web.Contracts.Categoria;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net.Security;
-using System.Text;
-using System.Text.Json.Serialization;
+
 
 namespace Hotel.Web.Controllers
 {
@@ -14,67 +9,74 @@ namespace Hotel.Web.Controllers
     {
         HttpClientHandler httpClientHadler = new HttpClientHandler();
 
-
-        public CategoriaController()
+        private readonly ICategoriaServise categoriaServise;
+        public CategoriaController(ICategoriaServise categoriaServise)
         {
-
-            this.httpClientHadler.ServerCertificateCustomValidationCallback = (sender, cert, chain, SslPolicyErrors) => { return true; };
+            this.categoriaServise = categoriaServise;
+            //this.httpClientHadler.ServerCertificateCustomValidationCallback = (sender, cert, chain, SslPolicyErrors) => { return true; };
 
         }
         // GET: CategoriaController
         public async Task<IActionResult> Index()
         {
-            var categoria = new CategoriaDefaultResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+
+            var URL = "https://localhost:7234/api/Categoria/GetCategoria";
+            var categorias = await categoriaServise.getAsync(URL);
+
+            //var categoria = new CategoriaDefaultResult();
+            //using (var httpClient = new HttpClient(this.httpClientHadler))
+            //{
+
+
+
+            //    using (var response = await httpClient.GetAsync(URL))
+            //    {
+            //        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //        {
+            //            string apiResponse = await response.Content.ReadAsStringAsync();
+            //            categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse);
+            if (!categorias.success)
             {
-
-                var URL = "https://localhost:7234/api/Categoria/GetCategoria";
-
-                using (var response = await httpClient.GetAsync(URL))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            ViewBag.Message = categoria.message;
-                            return View();
-                        }
-                    }
-                }
+                ViewBag.Message = categorias.message;
+                return View();
             }
-            return View(categoria.Data);
+            //        }
+            //    }
+            //}
+            return View(categorias.Data);
         }
 
         // GET: CategoriaController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var categoria = new CategoriaSingleResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+            var URL = $"https://localhost:7234/api/Categoria/GetCategoriaById?id={id}";
+            var categoria = await categoriaServise.getAsyncOne(URL);
+
+            //using (var httpClient = new HttpClient(this.httpClientHadler))
+            //{
+
+
+
+            //using (var response = await httpClient.GetAsync(URL + id))
+            //{
+            //    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //    {
+            //        string apiResponse = await response.Content.ReadAsStringAsync();
+            //        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+
+            if (!categoria.success)
             {
-
-                var URL = "https://localhost:7234/api/Categoria/GetCategoriaById?id=";
-
-                using (var response = await httpClient.GetAsync(URL + id))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            ViewBag.Message = categoria.message;
-                            return View();
-                        }
-                    }
-                }
+                ViewBag.Message = categoria.message;
+                return View();
             }
+            //        }
+            //    }
+            //}
             return View(categoria.Data);
         }
 
         // GET: CategoriaController/Create
-        public ActionResult Create()
+        public IActionResult Create()
         {
             return View();
         }
@@ -82,33 +84,33 @@ namespace Hotel.Web.Controllers
         // POST: CategoriaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CategoriaAddDto categoria)
+        public IActionResult Create(CategoriaAddDto categoria)
         {
             try
             {
 
-                using (var httpClient = new HttpClient(this.httpClientHadler))
-                {
+                var URL = "https://localhost:7234/api/Categoria/SaveCategoria";
+              categoriaServise.post(URL, categoria);
+                //using (var httpClient = new HttpClient(this.httpClientHadler))
+                //{
 
-                    var URL = "https://localhost:7234/api/Categoria/SaveCategoria";
-                    categoria.FechaCreacion = DateTime.Now;
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(categoria), Encoding.UTF8, "application/json" );
-                    using (var response = await httpClient.PostAsync(URL, content))
-                    {
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
-                            
-                            string apiResponse = await response.Content.ReadAsStringAsync();
-                            //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                            //if (!categoria.success)
-                            //{
-                            //    ViewBag.Message = categoria.message;
-                            //    return View();
-                            //}
-                        }
-                    }
-                }
-               
+
+                //    using (var response = await httpClient.DeleteAsync(URL + id))
+                //    {
+                //        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                //        {
+
+                //string apiResponse = await response.Content.ReadAsStringAsync();
+                //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                //if (!categoria.success)
+                //{
+                //    ViewBag.Message = categoria.message;
+                //    return View();
+                //}
+                //        }
+                //    }
+                //}
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -121,57 +123,63 @@ namespace Hotel.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             //Despues de ciertos updates deja de funcionar
-            var categoria = new CategoriaSingleResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+            var URL = $"https://localhost:7234/api/Categoria/GetCategoriaById?id={id}";
+
+            var categoria = await categoriaServise.getAsyncOne(URL);
+            //using (var httpClient = new HttpClient(this.httpClientHadler))
+            //{
+
+
+
+            //using (var response = await httpClient.GetAsync(URL + id))
+            //{
+            //    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //    {
+            //        string apiResponse = await response.Content.ReadAsStringAsync();
+            //        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+            if (!categoria.success)
             {
-
-                var URL = "https://localhost:7234/api/Categoria/GetCategoriaById?id=";
-
-                using (var response = await httpClient.GetAsync(URL + id))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            ViewBag.Message = categoria.message;
-                            return View();
-                        }
-                    }
-                }
+                ViewBag.Message = categoria.message;
+                return View();
             }
+            //        }
+            //    }
+            //}
             return View(categoria.Data);
         }
 
         // POST: CategoriaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit( CategoriaUpdateDto categoriaUpdateDto)
-        { 
+        public IActionResult Edit(CategoriaUpdateDto categoriaUpdateDto)
+        {
             try
             {
+                var URL = "https://localhost:7234/api/Categoria/UpdateCategoria";
+                categoriaServise.put(URL, categoriaUpdateDto);
+
+
                 //Despues de ciertos updates deja de funcionar
-                using (var httpClient = new HttpClient(this.httpClientHadler))
-                {
+                //using (var httpClient = new HttpClient(this.httpClientHadler))
+                //{
 
-                    var URL = "https://localhost:7234/api/Categoria/UpdateCategoria";
-                    StringContent content = new StringContent(JsonConvert.SerializeObject(categoriaUpdateDto), Encoding.UTF8, "application/json");
-                    using (var response = await httpClient.PostAsync(URL, content))
-                    {
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
 
-                            string apiResponse = await response.Content.ReadAsStringAsync();
-                            //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                            //if (!categoria.success)
-                            //{
-                            //    ViewBag.Message = categoria.message;
-                            //    return View();
-                            //}
-                        }
-                    }
-                }
+                //    StringContent content = new StringContent(JsonConvert.SerializeObject(categoriaUpdateDto), Encoding.UTF8, "application/json");
+                //    using (var response = await httpClient.PostAsync(URL, content))
+                //    {
+                //        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                //        {
+
+                //string apiResponse = await response.Content.ReadAsStringAsync();
+                //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                //if (!categoria.success)
+                //{
+                //    ViewBag.Message = categoria.message;
+                //    return View();
+                //}
+                //        }
+                //    }
+                //}
 
                 return RedirectToAction(nameof(Index));
             }
@@ -182,46 +190,52 @@ namespace Hotel.Web.Controllers
         }
 
         // GET: CategoriaController/Delete/5
-        public async Task<ActionResult>  Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var categoria = new CategoriaSingleResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+            var URL = $"https://localhost:7234/api/Categoria/GetCategoriaById?id={id}";
+            var categoria = await categoriaServise.getAsyncOne(URL);
+
+            //using (var httpClient = new HttpClient(this.httpClientHadler))
+            //{
+
+
+
+            //using (var response = await httpClient.GetAsync(URL + id))
+            //{
+            //    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //    {
+            //        string apiResponse = await response.Content.ReadAsStringAsync();
+            //        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+
+            if (!categoria.success)
             {
-
-                var URL = "https://localhost:7234/api/Categoria/GetCategoriaById?id=";
-
-                using (var response = await httpClient.GetAsync(URL + id))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            ViewBag.Message = categoria.message;
-                            return View();
-                        }
-                    }
-                }
+                ViewBag.Message = categoria.message;
+                return View();
             }
+            //        }
+            //    }
+            //}
             return View(categoria.Data);
         }
 
         // POST: CategoriaController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id, IFormCollection collection)
+        public IActionResult Delete(int id, IFormCollection collection)
         {
             try
             {
-                using (var httpClient = new HttpClient(this.httpClientHadler))
-                {
+                var URL = $"https://localhost:7234/api/Categoria/DeleteCategoria?id={id}";
 
-                    var URL = "https://localhost:7234/api/Categoria/DeleteCategoria?id=";
-                    using (var response = await httpClient.DeleteAsync(URL + id))
-                    {
-                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                        {
+                categoriaServise.delete(URL);
+                //using (var httpClient = new HttpClient(this.httpClientHadler))
+                //{
+
+
+                //    using (var response = await httpClient.DeleteAsync(URL + id))
+                //    {
+                //        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                //        {
 
                             //string apiResponse = await response.Content.ReadAsStringAsync();
                             //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
@@ -230,9 +244,9 @@ namespace Hotel.Web.Controllers
                             //    ViewBag.Message = categoria.message;
                             //    return View();
                             //}
-                        }
-                    }
-                }
+                //        }
+                //    }
+                //}
 
                 return RedirectToAction(nameof(Index));
             }
