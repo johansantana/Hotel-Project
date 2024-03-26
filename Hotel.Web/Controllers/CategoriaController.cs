@@ -1,5 +1,6 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
 using Hotel.Web.Contracts.Categoria;
+using Hotel.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -84,13 +85,14 @@ namespace Hotel.Web.Controllers
         // POST: CategoriaController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoriaAddDto categoria)
+        public async Task<IActionResult> Create(CategoriaAddDto categoriaAdd)
         {
+            CategoriaSingleResult categoria = new CategoriaSingleResult();
             try
             {
 
                 var URL = "https://localhost:7234/api/Categoria/SaveCategoria";
-              categoriaServise.post(URL, categoria);
+                 categoria = await categoriaServise.post(URL, categoriaAdd);
                 //using (var httpClient = new HttpClient(this.httpClientHadler))
                 //{
 
@@ -102,14 +104,14 @@ namespace Hotel.Web.Controllers
 
                 //string apiResponse = await response.Content.ReadAsStringAsync();
                 //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                //if (!categoria.success)
-                //{
-                //    ViewBag.Message = categoria.message;
-                //    return View();
-                //}
-                //        }
-                //    }
-                //}
+                if (!categoria.success)
+                {
+                    ViewBag.Message = categoria.message;
+                    return View();
+
+                }
+
+
 
                 return RedirectToAction(nameof(Index));
             }
@@ -151,12 +153,14 @@ namespace Hotel.Web.Controllers
         // POST: CategoriaController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(CategoriaUpdateDto categoriaUpdateDto)
+        public async Task<IActionResult> Edit(int id,CategoriaUpdateDto categoriaUpdateDto)    
         {
+            CategoriaSingleResult categoria = new CategoriaSingleResult();
             try
             {
                 var URL = "https://localhost:7234/api/Categoria/UpdateCategoria";
-                categoriaServise.put(URL, categoriaUpdateDto);
+                categoriaUpdateDto.IdCategoria = id;
+                 categoria = await categoriaServise.put(URL, categoriaUpdateDto);
 
 
                 //Despues de ciertos updates deja de funcionar
@@ -172,11 +176,11 @@ namespace Hotel.Web.Controllers
 
                 //string apiResponse = await response.Content.ReadAsStringAsync();
                 //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                //if (!categoria.success)
-                //{
-                //    ViewBag.Message = categoria.message;
-                //    return View();
-                //}
+                if (!categoria.success)
+                {
+                    ViewBag.Message = categoria.message;
+                    return View();
+                }
                 //        }
                 //    }
                 //}
@@ -221,13 +225,14 @@ namespace Hotel.Web.Controllers
         // POST: CategoriaController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, IFormCollection collection)
         {
+            CategoriaSingleResult categoria = new CategoriaSingleResult();
             try
             {
                 var URL = $"https://localhost:7234/api/Categoria/DeleteCategoria?id={id}";
 
-                categoriaServise.delete(URL);
+                categoria = await categoriaServise.delete(URL);
                 //using (var httpClient = new HttpClient(this.httpClientHadler))
                 //{
 
@@ -237,13 +242,13 @@ namespace Hotel.Web.Controllers
                 //        if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 //        {
 
-                            //string apiResponse = await response.Content.ReadAsStringAsync();
-                            //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                            //if (!categoria.success)
-                            //{
-                            //    ViewBag.Message = categoria.message;
-                            //    return View();
-                            //}
+                //string apiResponse = await response.Content.ReadAsStringAsync();
+                //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                if (!categoria.success)
+                {
+                    ViewBag.Message = categoria.message;
+                    return View();
+                }
                 //        }
                 //    }
                 //}

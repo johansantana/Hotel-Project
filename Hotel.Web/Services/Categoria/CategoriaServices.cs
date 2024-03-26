@@ -1,4 +1,5 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
+using Hotel.Aplication.Models.Categoria;
 using Hotel.Web.Contracts.Categoria;
 using Hotel.Web.Core;
 using Hotel.Web.Models;
@@ -15,8 +16,9 @@ namespace Hotel.Web.Services.Categoria
             this.httpClientHadler.ServerCertificateCustomValidationCallback = (sender, cert, chain, SslPolicyErrors) => { return true; };
         }
         // Hacer abstraccion tipo Aplicacion service para despues utilizar en el controller
-        public async void delete(string URL)
+        public async Task<CategoriaSingleResult> delete(string URL)
         {
+            var categoria = new CategoriaSingleResult();
             using (var httpClient = new HttpClient(this.httpClientHadler))
             {
                 using (var response = await httpClient.DeleteAsync(URL))
@@ -24,7 +26,13 @@ namespace Hotel.Web.Services.Categoria
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
 
-                        //string apiResponse = await response.Content.ReadAsStringAsync();
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                        if (!categoria.success)
+                        {
+                            categoria.success = false;
+                            return categoria;
+                        }
                         //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
                         //if (!categoria.success)
                         //{
@@ -34,6 +42,7 @@ namespace Hotel.Web.Services.Categoria
                     }
                 }
             }
+            return categoria;
         }
 
 
@@ -52,7 +61,7 @@ namespace Hotel.Web.Services.Categoria
                         categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse);
                         if (!categoria.success)
                         {
-                           
+
                             return categoria;
                         }
                     }
@@ -72,7 +81,7 @@ namespace Hotel.Web.Services.Categoria
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                        categoria = JsonConvert.DeserializeObject <CategoriaSingleResult> (apiResponse);
                         if (!categoria.success)
                         {
                             return categoria;
@@ -83,32 +92,41 @@ namespace Hotel.Web.Services.Categoria
             }
             return categoria;
         }
-        public async void post(string URL, CategoriaAddDto AddDto)
+        public async Task<CategoriaSingleResult> post(string URL, CategoriaAddDto AddDto)
         {
+            var categoria = new CategoriaSingleResult();
+
             using (var httpClient = new HttpClient(this.httpClientHadler))
             {
 
                 AddDto.FechaCreacion = DateTime.Now;
                 StringContent content = new StringContent(JsonConvert.SerializeObject(AddDto), Encoding.UTF8, "application/json");
+               
                 using (var response = await httpClient.PostAsync(URL, content))
                 {
+
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
 
-                        //string apiResponse = await response.Content.ReadAsStringAsync();
-                        //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        //if (!categoria.success)
-                        //{
-                        //    ViewBag.Message = categoria.message;
-                        //    return View();
-                        //}
+                        string apiResponse = await response.Content.ReadAsStringAsync();
+                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                        if (!categoria.success)
+                        {
+                            categoria.success = false;
+                            return categoria;
+                        }
+
+
+
                     }
                 }
             }
+            return categoria;
         }
 
-        public async void put(string URL, CategoriaUpdateDto updateDto)
+        public async Task<CategoriaSingleResult> put(string URL, CategoriaUpdateDto updateDto)
         {
+            var categoria = new CategoriaSingleResult();
             using (var httpClient = new HttpClient(this.httpClientHadler))
             {
 
@@ -120,15 +138,18 @@ namespace Hotel.Web.Services.Categoria
                     {
 
                         string apiResponse = await response.Content.ReadAsStringAsync();
-                        //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        //if (!categoria.success)
-                        //{
-                        //    ViewBag.Message = categoria.message;
-                        //    return View();
-                        //}
+                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
+                        if (!categoria.success)
+                        {
+                            categoria.success = false;
+                            return categoria;
+                        }
+
                     }
                 }
             }
+
+            return categoria;
 
         }
     }
