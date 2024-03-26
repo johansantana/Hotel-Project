@@ -6,7 +6,7 @@ public class CategoriaRepository : BaseRepository<Categoria>, ICategoriaReposito
     private readonly HotelContext hotelContext;
     //  private readonly LoggerAdapter<CategoriaRepository> logger; // loger es el adaptador, el cliente es Categoria repository y el targer es CategoriaException
     //Realizar abstraccion de esta interfaz 
-    ILoggerAdapter<CategoriaRepository> logger;
+    private readonly ILoggerAdapter<CategoriaRepository> logger;
     public CategoriaRepository(HotelContext hotelContext, ILoggerAdapter<CategoriaRepository> logger ) : base(hotelContext)
     {
         this.hotelContext = hotelContext;

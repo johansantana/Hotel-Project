@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Ioc", "Hotel.Ioc\Hote
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Api", "Hotel.Api\Hotel.Api.csproj", "{7FDF09B7-9A84-449E-A3F9-83F5B1526A16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Aplication", "Hotel.Aplication\Hotel.Aplication.csproj", "{598A90DE-510A-45A0-B5B9-89B2E278CE4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hotel.Aplication", "Hotel.Aplication\Hotel.Aplication.csproj", "{598A90DE-510A-45A0-B5B9-89B2E278CE4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

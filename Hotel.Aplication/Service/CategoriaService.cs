@@ -13,12 +13,12 @@ namespace Hotel.Aplication.Service
     public class CategoriaService : ICategoriaService
     {
 
-         public ILoggerAdapter<CategoriaService> _logger {  get; set; }
-        public ICategoriaRepository categoriaRepository { get; set; }
+        private readonly ILoggerAdapter<CategoriaService> Logger;
+        private readonly ICategoriaRepository categoriaRepository;
         public CategoriaService(ILoggerAdapter<CategoriaService> logger, ICategoriaRepository categoriaRe) 
         {
 
-            _logger = logger;
+            Logger = logger;
             categoriaRepository = categoriaRe;
         }
 
@@ -44,7 +44,7 @@ namespace Hotel.Aplication.Service
             catch (Exception ex){
                 result.Success = false;
                 result.Message = "Error borrando la categoria";
-               throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
+               throw new CategoriaServiceException(result.Message + ex.ToString(), Logger);
             }
 
             return result;
@@ -70,7 +70,7 @@ namespace Hotel.Aplication.Service
                 result.Success = false;
                 result.Message = "Error obteniendo las categorias";
                 //_Logger.LogError(result.Message + ex.ToString());
-               throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
+               throw new CategoriaServiceException(result.Message + ex.ToString(), Logger);
             }
             
             return result;
@@ -95,7 +95,7 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error obteniendo la categoria";
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
+                throw new CategoriaServiceException(result.Message + ex.ToString(), Logger);
 
             }
             return result;
@@ -128,7 +128,7 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error guardando la categoria";
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
+                throw new CategoriaServiceException(result.Message + ex.ToString(), Logger);
             }
             return result;
         }
@@ -162,7 +162,7 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "Error actualizando la categoria";
-                throw new CategoriaServiceException(result.Message + ex.ToString(), _logger);
+                throw new CategoriaServiceException(result.Message + ex.ToString(), Logger);
             }
             return result;
         }
@@ -174,14 +174,14 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "La descripcion no puede estar vacia";
-                _logger.LogWarning(result.Message);
+                Logger.LogWarning(result.Message);
                 return result;
             }
             if (categoriaDtoBase.Descripcion.Length > 200)
             {
                 result.Success = false;
                 result.Message = "La descripcion no puede estar vacia";
-                _logger.LogWarning(result.Message);
+                Logger.LogWarning(result.Message);
                 return result;
             }
             return result;
@@ -194,7 +194,7 @@ namespace Hotel.Aplication.Service
             {
                 result.Success = false;
                 result.Message = "La categoria no existe";
-                _logger.LogWarning(result.Message);
+                Logger.LogWarning(result.Message);
                 return result;
             }
             return result;

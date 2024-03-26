@@ -1,3 +1,9 @@
+using Hotel.Aplication.Contracts.Categoria;
+using Hotel.Aplication.Service;
+using Hotel.Infrastructure.LoggerAdapter;
+using Hotel.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
