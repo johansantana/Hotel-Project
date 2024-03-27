@@ -59,7 +59,7 @@ namespace Hotel.Apii.Controllers
         }
 
         // PUT api/<CategoriaController>/5
-        [HttpPost("UpdateCategoria")]
+        [HttpPut("UpdateCategoria")]
         public IActionResult Put([FromBody] Aplication.Dtos.Categoria.CategoriaUpdateDto categoriaUpdateDto)
         {
 

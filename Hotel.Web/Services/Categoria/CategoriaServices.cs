@@ -1,152 +1,91 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
-using Hotel.Aplication.Models.Categoria;
 using Hotel.Web.Contracts.Categoria;
-using Hotel.Web.Core;
+using Hotel.Web.HttpHelpper;
 using Hotel.Web.Models;
 using Newtonsoft.Json;
-using System.Text;
+
 
 namespace Hotel.Web.Services.Categoria
 {
     public class CategoriaServices : ICategoriaServise
     {
-        HttpClientHandler httpClientHadler = new HttpClientHandler();
-        public CategoriaServices()
+        private readonly IHttpHelper<CategoriaAddDto, CategoriaUpdateDto> httpHelper;
+        public CategoriaServices(IHttpHelper<CategoriaAddDto, CategoriaUpdateDto>  httpHelper)
         {
-            this.httpClientHadler.ServerCertificateCustomValidationCallback = (sender, cert, chain, SslPolicyErrors) => { return true; };
+            this.httpHelper = httpHelper;
+            
         }
         // Hacer abstraccion tipo Aplicacion service para despues utilizar en el controller
-        public async Task<CategoriaSingleResult> delete(string URL)
+        public  CategoriaSingleResult delete(string URL)
         {
-            var categoria = new CategoriaSingleResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
-            {
-                using (var response = await httpClient.DeleteAsync(URL))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
+           
 
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            categoria.success = false;
-                            return categoria;
-                        }
-                        //categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        //if (!categoria.success)
-                        //{
-                        //    ViewBag.Message = categoria.message;
-                        //    return View();
-                        //}
-                    }
-                }
+            var apiResponse = httpHelper.DeleteAsync(URL);
+            var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+            if (!categoria.success)
+            {
+                categoria.success = false;
+                return categoria;
             }
+
             return categoria;
         }
 
 
 
-        public async Task<CategoriaDefaultResult> getAsync(string URL)
+        public  CategoriaDefaultResult getAsync(string URL)
         {
-            var categoria = new CategoriaDefaultResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+           
+            var apiResponse = httpHelper.GetAllAsync(URL);
+
+            var categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse.Result);
+            if (!categoria.success)
             {
 
-                using (var response = await httpClient.GetAsync(URL))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-
-                            return categoria;
-                        }
-                    }
-                }
+                return categoria;
             }
+
             return categoria;
         }
-        public async Task<CategoriaSingleResult> getAsyncOne(string URL)
+        public  CategoriaSingleResult getAsyncOne(string URL)
         {
-            var categoria = new CategoriaSingleResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+            
+            var apiResponse = httpHelper.GetAsync(URL);
+
+            var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+            if (!categoria.success)
             {
 
-
-                using (var response = await httpClient.GetAsync(URL))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject <CategoriaSingleResult> (apiResponse);
-                        if (!categoria.success)
-                        {
-                            return categoria;
-                        }
-
-                    }
-                }
+                return categoria;
             }
+
             return categoria;
         }
-        public async Task<CategoriaSingleResult> post(string URL, CategoriaAddDto AddDto)
+        public  CategoriaSingleResult post(string URL, CategoriaAddDto AddDto)
         {
-            var categoria = new CategoriaSingleResult();
+           
+            var apiResponse = httpHelper.PostAsync(URL, AddDto);
 
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+            var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+            if (!categoria.success)
             {
 
-                AddDto.FechaCreacion = DateTime.Now;
-                StringContent content = new StringContent(JsonConvert.SerializeObject(AddDto), Encoding.UTF8, "application/json");
-               
-                using (var response = await httpClient.PostAsync(URL, content))
-                {
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            categoria.success = false;
-                            return categoria;
-                        }
-
-
-
-                    }
-                }
+                return categoria;
             }
+
             return categoria;
         }
 
-        public async Task<CategoriaSingleResult> put(string URL, CategoriaUpdateDto updateDto)
+        public  CategoriaSingleResult put(string URL, CategoriaUpdateDto updateDto)
         {
-            var categoria = new CategoriaSingleResult();
-            using (var httpClient = new HttpClient(this.httpClientHadler))
+            
+            var apiResponse = httpHelper.PutAsync(URL, updateDto);
+
+           var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+            if (!categoria.success)
             {
 
-
-                StringContent content = new StringContent(JsonConvert.SerializeObject(updateDto), Encoding.UTF8, "application/json");
-                using (var response = await httpClient.PostAsync(URL, content))
-                {
-                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-
-                        string apiResponse = await response.Content.ReadAsStringAsync();
-                        categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse);
-                        if (!categoria.success)
-                        {
-                            categoria.success = false;
-                            return categoria;
-                        }
-
-                    }
-                }
+                return categoria;
             }
 
             return categoria;
