@@ -1,5 +1,6 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
 using Hotel.Web.Contracts.Categoria;
+using Hotel.Web.EndpoitComponent.Categoria;
 using Hotel.Web.HttpHelpper;
 using Hotel.Web.Models;
 using Newtonsoft.Json;
@@ -16,12 +17,14 @@ namespace Hotel.Web.Services.Categoria
             
         }
         // Hacer abstraccion tipo Aplicacion service para despues utilizar en el controller
-        public  CategoriaSingleResult delete(string URL)
+        public  CategoriaSingleResult delete(int id)
         {
            
 
-            var apiResponse = httpHelper.DeleteAsync(URL);
+            var apiResponse = httpHelper.DeleteAsync(CategoriasEnpoints.EnpointDelete(id));
+
             var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+
             if (!categoria.success)
             {
                 categoria.success = false;
@@ -33,12 +36,12 @@ namespace Hotel.Web.Services.Categoria
 
 
 
-        public  CategoriaDefaultResult getAsync(string URL)
+        public  CategoriaDefaultResult getAsync()
         {
-           
-            var apiResponse = httpHelper.GetAllAsync(URL);
+            var apiResponse = httpHelper.GetAllAsync(CategoriasEnpoints.EnpointGetAll());
 
             var categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse.Result);
+
             if (!categoria.success)
             {
 
@@ -47,12 +50,13 @@ namespace Hotel.Web.Services.Categoria
 
             return categoria;
         }
-        public  CategoriaSingleResult getAsyncOne(string URL)
+        public  CategoriaSingleResult getAsyncOne(int id)
         {
             
-            var apiResponse = httpHelper.GetAsync(URL);
+            var apiResponse = httpHelper.GetAsync(CategoriasEnpoints.EnpointGet(id));
 
             var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+
             if (!categoria.success)
             {
 
@@ -61,12 +65,13 @@ namespace Hotel.Web.Services.Categoria
 
             return categoria;
         }
-        public  CategoriaSingleResult post(string URL, CategoriaAddDto AddDto)
+        public  CategoriaSingleResult post(CategoriaAddDto AddDto)
         {
            
-            var apiResponse = httpHelper.PostAsync(URL, AddDto);
+            var apiResponse = httpHelper.PostAsync(CategoriasEnpoints.EnpointPost(), AddDto);
 
             var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+
             if (!categoria.success)
             {
 
@@ -76,12 +81,13 @@ namespace Hotel.Web.Services.Categoria
             return categoria;
         }
 
-        public  CategoriaSingleResult put(string URL, CategoriaUpdateDto updateDto)
+        public  CategoriaSingleResult put(CategoriaUpdateDto updateDto)
         {
             
-            var apiResponse = httpHelper.PutAsync(URL, updateDto);
+            var apiResponse = httpHelper.PutAsync(CategoriasEnpoints.EnpointUpdate(), updateDto);
 
            var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
+
             if (!categoria.success)
             {
 

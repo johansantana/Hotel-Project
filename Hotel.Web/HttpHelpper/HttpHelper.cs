@@ -26,7 +26,6 @@ namespace Hotel.Web.HttpHelpper
             {
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-
                     return await ResponderMensaje(response);
 
                 }

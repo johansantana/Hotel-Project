@@ -8,10 +8,10 @@ namespace Hotel.Web.Core
         where Tadd : class
         where TUpdate : class
     {
-        public TDeResult getAsync(string URL);
-        public TSingleResult getAsyncOne(string URL);
-        public TSingleResult post(string URL, Tadd AddDto);
-        public TSingleResult put(string URL, TUpdate updateDto);
-        public TSingleResult delete(string URL);
+        public TDeResult getAsync();
+        public TSingleResult getAsyncOne(int id);
+        public TSingleResult post(Tadd AddDto);
+        public TSingleResult put(TUpdate updateDto);
+        public TSingleResult delete(int id);
     }
 }
