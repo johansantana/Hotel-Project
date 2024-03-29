@@ -29,6 +29,7 @@ public class RolUsuarioService : IRolUsuarioService
             {
                 IdRolUsuario = us.IdRolUsuario,
                 Estado = us.Estado,
+                Descripcion = us.Descripcion,
                 FechaCreacion = us.FechaCreacion,
             }).ToList();
         }

@@ -1,4 +1,10 @@
+using Hotel.Web.Services.Usuario;
+using Hotel.Web.Services.RolUsuario;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IRolUsuarioService, RolUsuarioService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

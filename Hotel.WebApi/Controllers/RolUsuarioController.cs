@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
-using Hotel.Api.Dtos;
 using Hotel.Api.Models;
+using Hotel.Application.Contracts;
+using Hotel.Application.Dtos;
 
 namespace Hotel.Api.Controllers;
 
@@ -9,71 +10,68 @@ namespace Hotel.Api.Controllers;
 [ApiController]
 public class RolUsuarioController : ControllerBase
 {
-    private readonly IRolUsuarioRepository rolUsuarioRepository;
-    public RolUsuarioController(IRolUsuarioRepository rolUsuarioRepository)
+    private readonly IRolUsuarioService rolUsuarioService;
+    public RolUsuarioController(IRolUsuarioService rolUsuarioService)
     {
-        this.rolUsuarioRepository = rolUsuarioRepository;
+        this.rolUsuarioService = rolUsuarioService;
     }
     // GET: api/<RolUsuarioController>
     [HttpGet("GetRolUsuarios")]
     public IActionResult Get()
     {
-        var rolUsuario = rolUsuarioRepository.GetEntities().Select(cd => new RolUsuarioGetModel()
+        var result = rolUsuarioService.Get();
+        if (!result.Success)
         {
-            IdRolUsuario = cd.IdRolUsuario,
-            Descripcion = cd.Descripcion,
-            Estado = cd.Estado
-        });
-        return Ok(rolUsuario);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // GET api/<RolUsuarioController>/5
     [HttpGet("GetRolUsuarioById")]
     public IActionResult Get(int id)
     {
-        var rolUsuario = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
-        RolUsuarioGetModel rolUsuarioGetModel = new RolUsuarioGetModel()
+        var result = rolUsuarioService.GetById(id);
+        if (!result.Success)
         {
-            IdRolUsuario = rolUsuario.IdRolUsuario,
-            Descripcion = rolUsuario.Descripcion,
-            Estado = rolUsuario.Estado
-        };
-        return Ok(rolUsuarioGetModel);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // POST api/<UsuarioController>
     [HttpPost("AddRolUsuario")]
     public IActionResult Post([FromBody] RolUsuarioAddDto rolUsuarioDto)
     {
-        rolUsuarioRepository.Add(new RolUsuario()
+        var result = rolUsuarioService.Save(rolUsuarioDto);
+        if (!result.Success)
         {
-            Descripcion = rolUsuarioDto.Descripcion,
-            Estado = rolUsuarioDto.Estado,
-            FechaCreacion = rolUsuarioDto.FechaCreacion
-        });
-
-        return Ok("Rol de Usuario agregado");
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // PUT api/<RolUsuarioController>/5
     [HttpPut("UpdateRolUsuario")]
     public IActionResult Put(int id, [FromBody] RolUsuarioUpdateDto rolUsuarioDto)
     {
-        var rolUsuarioToUpdate = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
-        rolUsuarioToUpdate.Descripcion = rolUsuarioDto.Descripcion;
-        rolUsuarioToUpdate.Estado = rolUsuarioDto.Estado;
-        rolUsuarioRepository.Update(rolUsuarioToUpdate);
-
-        return Ok("Rol de Usuario actualizado");
+        var result = rolUsuarioService.Update(id, rolUsuarioDto);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // DELETE api/<RolUsuarioController>/5
     [HttpDelete("DeleteRolUsuario")]
     public IActionResult Delete(int id)
     {
-        var rolUsuarioDeleted = rolUsuarioRepository.GetEntity(id) ?? throw new RolUsuarioException("Rol de Usuario no encontrado");
-        rolUsuarioRepository.Remove(rolUsuarioDeleted);
-
-        return Ok("Rol de Usuario eliminado");
+        var result = rolUsuarioService.Delete(id);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 }

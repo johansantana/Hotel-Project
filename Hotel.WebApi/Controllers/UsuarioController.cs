@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
-using Hotel.Api.Dtos;
 using Hotel.Api.Models;
+using Hotel.Application.Contracts;
+using Hotel.Application.Dtos;
 
 namespace Hotel.Api.Controllers;
 
@@ -10,86 +11,69 @@ namespace Hotel.Api.Controllers;
 [ApiController]
 public class UsuarioController : ControllerBase
 {
-    private readonly IUsuarioRepository usuarioRepository;
-    public UsuarioController(IUsuarioRepository usuarioRepository)
+    private readonly IUsuarioService usuarioService;
+    public UsuarioController(IUsuarioService usuarioService)
     {
-        this.usuarioRepository = usuarioRepository;
+        this.usuarioService = usuarioService;
     }
     // GET: api/<UsuarioController>
     [HttpGet("GetUsuarios")]
     public IActionResult Get()
     {
-        var usuario = usuarioRepository.GetEntities().Select(cd => new UsuarioGetModel()
+        var result = usuarioService.Get();
+        if (!result.Success)
         {
-            IdUsuario = cd.IdUsuario,
-            NombreCompleto = cd.NombreCompleto,
-            Correo = cd.Correo,
-            IdRolUsuario = cd.IdRolUsuario,
-            Clave = cd.Clave,
-            Estado = cd.Estado,
-            FechaCreacion = cd.FechaCreacion,
-        });
-        return Ok(usuario);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // GET api/<UsuarioController>/5
     [HttpGet("GetUsuarioById")]
     public IActionResult Get(int id)
     {
-        var usuario = usuarioRepository.GetEntity(id) ?? throw new UsuarioException("Usuario no encontrado");
-        UsuarioGetModel usuarioGetModel = new UsuarioGetModel()
+        var result = usuarioService.GetById(id);
+        if (!result.Success)
         {
-            IdUsuario = usuario.IdUsuario,
-            NombreCompleto = usuario.NombreCompleto,
-            Correo = usuario.Correo,
-            IdRolUsuario = usuario.IdRolUsuario,
-            Clave = usuario.Clave,
-            Estado = usuario.Estado,
-            FechaCreacion = usuario.FechaCreacion,
-        };
-        return Ok(usuarioGetModel);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // POST api/<UsuarioController>
     [HttpPost("AddUsuario")]
     public IActionResult Post([FromBody] UsuarioAddDto usuarioAddDto)
     {
-        usuarioRepository.Add(new Usuario()
+        var result = usuarioService.Save(usuarioAddDto);
+        if (!result.Success)
         {
-            NombreCompleto = usuarioAddDto.NombreCompleto,
-            Correo = usuarioAddDto.Correo,
-            Clave = usuarioAddDto.Clave,
-            Estado = usuarioAddDto.Estado,
-            IdRolUsuario = usuarioAddDto.IdRolUsuario,
-            FechaCreacion = usuarioAddDto.FechaCreacion,
-        });
-
-        return Ok("Usuario creado");
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // PUT api/<UsuarioController>/5
     [HttpPut("UpdateUsuario")]
     public IActionResult Put(int id, [FromBody] UsuarioUpdateDto usuarioUpdateDto)
     {
-        var usuarioToUpdate = usuarioRepository.GetEntity(id) ?? throw new UsuarioException("Usuario no encontrado");
-        usuarioToUpdate.Clave = usuarioUpdateDto.Clave;
-        usuarioToUpdate.Correo = usuarioUpdateDto.Correo;
-        usuarioToUpdate.NombreCompleto = usuarioUpdateDto.NombreCompleto;
-        usuarioToUpdate.Estado = usuarioUpdateDto.Estado;
-        usuarioToUpdate.IdRolUsuario = usuarioUpdateDto.IdRolUsuario;
-        usuarioRepository.Update(usuarioToUpdate);
-
-        return Ok("Usuario actualizado");
+        var result = usuarioService.Update(id, usuarioUpdateDto);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // DELETE api/<UsuarioController>/5
     [HttpDelete("DeleteUsuario")]
     public IActionResult Delete(int id)
     {
-        var usuarioDeleted = usuarioRepository.GetEntity(id) ?? throw new UsuarioException("Usuario no encontrado");
-        usuarioRepository.Remove(usuarioDeleted);
-
-        return Ok("Usuario eliminado");
+        var result = usuarioService.Delete(id);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 }
 
