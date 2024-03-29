@@ -27,6 +27,7 @@ public class EstadoHabitacionService : IEstadoHabitacionService
         {
             result.Data = estadoHabitacionRepository.GetEntities().Select(eh => new EstadoHabitacionGetModel
             {
+                IdEstadoHabitacion = eh.IdEstadoHabitacion,
                 Descripcion = eh.Descripcion,
                 Estado = eh.Estado,
                 FechaCreacion = eh.FechaCreacion
@@ -49,6 +50,7 @@ public class EstadoHabitacionService : IEstadoHabitacionService
             var estadoHabitacion = estadoHabitacionRepository.GetEntity(estadoHabitacionId) ?? throw new EstadoHabitacionServiceException("Estado de habitación no encontrado.");
             result.Data = new EstadoHabitacionGetModel()
             {
+                IdEstadoHabitacion = estadoHabitacion.IdEstadoHabitacion,
                 Descripcion = estadoHabitacion.Descripcion,
                 Estado = estadoHabitacion.Estado,
                 FechaCreacion = estadoHabitacion.FechaCreacion,
@@ -72,6 +74,7 @@ public class EstadoHabitacionService : IEstadoHabitacionService
             result.Data = estadoHabitacion;
             estadoHabitacionRepository.Add(new EstadoHabitacion()
             {
+                IdEstadoHabitacion = estadoHabitacion.Id,
                 Descripcion = estadoHabitacion.Descripcion,
                 Estado = estadoHabitacion.Estado,
                 FechaCreacion = DateTime.Now

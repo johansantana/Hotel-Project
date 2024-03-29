@@ -1,4 +1,10 @@
+using Hotel.Web.Services.EstadoHabitacion;
+using Hotel.Web.Services.Habitacion;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<IHabitacionService, HabitacionService>();
+builder.Services.AddScoped<IEstadoHabitacionService, EstadoHabitacionService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

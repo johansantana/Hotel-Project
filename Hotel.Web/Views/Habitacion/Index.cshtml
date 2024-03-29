@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Hotel.Application.Models.HabitacionGetModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Habitaciones</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Numero)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Detalle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>
+                Id de Estado de Habitación
+            </th>
+            <th>
+                Id de Piso
+            </th>
+            <th>
+                Id de Categoría
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th>
+                Fecha de Creación
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdHabitacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Detalle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdEstadoHabitacion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdPiso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdCategoria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCreacion)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.IdHabitacion }) |
+                @Html.ActionLink("Details", "Details", new { id=item.IdHabitacion })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

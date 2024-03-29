@@ -1,3 +1,5 @@
+using Hotel.Application.Contracts;
+using Hotel.Application.Services;
 using Hotel.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +13,13 @@ builder.Services.AddDbContext<HotelContext>(options => options.UseSqlServer(buil
 // Repositories.
 builder.Services.AddScoped<IHabitacionRepository, HabitacionRepository>();
 builder.Services.AddScoped<IEstadoHabitacionRepository, EstadoHabitacionRepository>();
+
+// Services.
+builder.Services.AddScoped<IHabitacionService, HabitacionService>();
+builder.Services.AddScoped<IEstadoHabitacionService, EstadoHabitacionService>();
+
+// Logger
+builder.Services.AddScoped(typeof(LoggerAdapter<>));
 
 // App Services.
 builder.Services.AddControllers();

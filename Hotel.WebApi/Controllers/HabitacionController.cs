@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Hotel.Infrastructure;
 using Hotel.Api.Models;
-using Hotel.Api.Dtos;
+using Hotel.Application.Contracts;
+using Hotel.Application.Dtos;
 
 namespace Hotel.Api.Controllers;
 
@@ -9,94 +10,68 @@ namespace Hotel.Api.Controllers;
 [ApiController]
 public class HabitacionController : ControllerBase
 {
-    private readonly IHabitacionRepository habitacionRepository;
-    public HabitacionController(IHabitacionRepository habitacionRepository)
+    private readonly IHabitacionService habitacionService;
+    public HabitacionController(IHabitacionService habitacionService)
     {
-        this.habitacionRepository = habitacionRepository;
+        this.habitacionService = habitacionService;
     }
     // GET: api/<HabitacionController>
     [HttpGet("GetHabitaciones")]
     public IActionResult Get()
     {
-        var habitacion = habitacionRepository.GetEntities().Select(cd => new HabitacionGetModel()
+        var result = habitacionService.Get();
+        if (!result.Success)
         {
-            IdHabitacion = cd.IdHabitacion,
-            Numero = cd.Numero,
-            Detalle = cd.Detalle,
-            Precio = cd.Precio,
-            IdEstadoHabitacion = cd.IdEstadoHabitacion,
-            IdPiso = cd.IdPiso,
-            IdCategoria = cd.IdCategoria,
-            Estado = cd.Estado,
-            FechaCreacion = cd.FechaCreacion,
-        });
-        return Ok(habitacion);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // GET api/<HabitacionController>/5
     [HttpGet("GetHabitacionById")]
     public IActionResult Get(int id)
     {
-        var habitacion = habitacionRepository.GetEntity(id) ?? throw new HabitacionException("Habitación no encontrada");
-        HabitacionGetModel habitacionGetModel = new HabitacionGetModel()
+        var result = habitacionService.GetById(id);
+        if (!result.Success)
         {
-            IdHabitacion = habitacion.IdHabitacion,
-            Numero = habitacion.Numero,
-            Detalle = habitacion.Detalle,
-            Precio = habitacion.Precio,
-            IdEstadoHabitacion = habitacion.IdEstadoHabitacion,
-            IdPiso = habitacion.IdPiso,
-            IdCategoria = habitacion.IdCategoria,
-            Estado = habitacion.Estado,
-            FechaCreacion = habitacion.FechaCreacion,
-        };
-
-        return Ok(habitacionGetModel);
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // POST api/<HabitacionController>
     [HttpPost("AddHabitacion")]
     public IActionResult Post([FromBody] HabitacionAddDto habitacionModel)
     {
-        habitacionRepository.Add(new Habitacion()
+        var result = habitacionService.Save(habitacionModel);
+        if (!result.Success)
         {
-            Numero = habitacionModel.Numero,
-            Detalle = habitacionModel.Detalle,
-            Precio = habitacionModel.Precio,
-            IdEstadoHabitacion = habitacionModel.IdEstadoHabitacion,
-            IdPiso = habitacionModel.IdPiso,
-            IdCategoria = habitacionModel.IdCategoria,
-            Estado = habitacionModel.Estado,
-            FechaCreacion = habitacionModel.FechaCreacion
-        });
-
-        return Ok("Habitación agregada");
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // PUT api/<HabitacionController>/5
     [HttpPut("UpdateHabitacion")]
     public IActionResult Put(int id, [FromBody] HabitacionUpdateDto habitacionModel)
     {
-        var habitacionToUpdate = habitacionRepository.GetEntity(id) ?? throw new HabitacionException("Habitación no encontrada");
-        habitacionToUpdate.Numero = habitacionModel.Numero;
-        habitacionToUpdate.Detalle = habitacionModel.Detalle;
-        habitacionToUpdate.Precio = habitacionModel.Precio;
-        habitacionToUpdate.IdEstadoHabitacion = habitacionModel.IdEstadoHabitacion;
-        habitacionToUpdate.IdPiso = habitacionModel.IdPiso;
-        habitacionToUpdate.IdCategoria = habitacionModel.IdCategoria;
-        habitacionToUpdate.Estado = habitacionModel.Estado;
-        habitacionRepository.Update(habitacionToUpdate);
-
-        return Ok("Habitación actualizada");
+        var result = habitacionService.Update(id, habitacionModel);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 
     // DELETE api/<HabitacionController>/5
     [HttpDelete("DeleteHabitacion")]
     public IActionResult Delete(int id)
     {
-        var habitacionDeleted = habitacionRepository.GetEntity(id) ?? throw new HabitacionException("Habitación no encontrada");
-        habitacionRepository.Remove(habitacionDeleted);
-
-        return Ok("Habitación eliminada");
+        var result = habitacionService.Delete(id);
+        if (!result.Success)
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
 }
