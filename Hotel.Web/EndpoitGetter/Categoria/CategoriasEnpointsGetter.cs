@@ -1,7 +1,7 @@
 ﻿using Hotel.Web.Core;
 namespace Hotel.Web.EndpoitComponent.Categoria
 {
-    public class CategoriasEnpoints 
+    public class CategoriasEnpointsGetter 
     {
         //public static string EnpointGetAll { get; } = "https://localhost:7234/api/Categoria/GetCategoria";
         //public static string EnpointGet { get; } = "https://localhost:7234/api/Categoria/GetCategoriaById?id=";

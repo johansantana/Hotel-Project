@@ -21,7 +21,7 @@ namespace Hotel.Web.Services.Categoria
         {
            
 
-            var apiResponse = httpHelper.DeleteAsync(CategoriasEnpoints.EnpointDelete(id));
+            var apiResponse = httpHelper.DeleteAsync(CategoriasEnpointsGetter.EnpointDelete(id));
 
             var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
 
@@ -38,7 +38,7 @@ namespace Hotel.Web.Services.Categoria
 
         public  CategoriaDefaultResult getAsync()
         {
-            var apiResponse = httpHelper.GetAllAsync(CategoriasEnpoints.EnpointGetAll());
+            var apiResponse = httpHelper.GetAllAsync(CategoriasEnpointsGetter.EnpointGetAll());
 
             var categoria = JsonConvert.DeserializeObject<CategoriaDefaultResult>(apiResponse.Result);
 
@@ -53,7 +53,7 @@ namespace Hotel.Web.Services.Categoria
         public  CategoriaSingleResult getAsyncOne(int id)
         {
             
-            var apiResponse = httpHelper.GetAsync(CategoriasEnpoints.EnpointGet(id));
+            var apiResponse = httpHelper.GetAsync(CategoriasEnpointsGetter.EnpointGet(id));
 
             var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
 
@@ -68,7 +68,7 @@ namespace Hotel.Web.Services.Categoria
         public  CategoriaSingleResult post(CategoriaAddDto AddDto)
         {
            
-            var apiResponse = httpHelper.PostAsync(CategoriasEnpoints.EnpointPost(), AddDto);
+            var apiResponse = httpHelper.PostAsync(CategoriasEnpointsGetter.EnpointPost(), AddDto);
 
             var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
 
@@ -84,7 +84,7 @@ namespace Hotel.Web.Services.Categoria
         public  CategoriaSingleResult put(CategoriaUpdateDto updateDto)
         {
             
-            var apiResponse = httpHelper.PutAsync(CategoriasEnpoints.EnpointUpdate(), updateDto);
+            var apiResponse = httpHelper.PutAsync(CategoriasEnpointsGetter.EnpointUpdate(), updateDto);
 
            var categoria = JsonConvert.DeserializeObject<CategoriaSingleResult>(apiResponse.Result);
 
