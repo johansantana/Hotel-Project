@@ -1,7 +1,7 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
-using Hotel.Web.Contracts.Categoria;
-using Hotel.Web.EndpoitComponent.Categoria;
-using Hotel.Web.Models;
+using Hotel.ApiConsumption.Contracts.Categoria;
+
+using Hotel.ApiConsumption.Models;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,7 +20,8 @@ namespace Hotel.Web.Controllers
         // GET: CategoriaController
         public  IActionResult Index()
         {
-            var categorias =  categoriaServise.getAsync();
+
+            var categorias = categoriaServise.getAsync();
 
             if (!categorias.success)
             {

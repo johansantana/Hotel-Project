@@ -1,13 +1,17 @@
-using Hotel.Web.Contracts.Categoria;
+using Hotel.ApiConsumption.Contracts.Categoria;
 using Hotel.Web.Services.Categoria;
-using Hotel.Web.HttpHelpper;
+using Hotel.ApiConsumption.HttpHelpper;
 using Hotel.Aplication.Dtos.Categoria;
+using Hotel.Infrastructure.LoggerAdapter;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoriaServise, CategoriaServices>();
 builder.Services.AddSingleton<IHttpHelper<CategoriaAddDto, CategoriaUpdateDto>, HttpHelper<CategoriaAddDto, CategoriaUpdateDto>>();
+
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<ILoggerAdapter<CategoriaServices>, LoggerAdapter<CategoriaServices>>();
 
 builder.Services.AddControllersWithViews();
 

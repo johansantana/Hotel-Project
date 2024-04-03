@@ -1,6 +1,6 @@
 ﻿using Hotel.Aplication.Dtos.Categoria;
 
-namespace Hotel.Web.HttpHelpper
+namespace Hotel.ApiConsumption.HttpHelpper
 {
     public interface IHttpHelper<TAdd, TUpdate> 
         where TAdd : class

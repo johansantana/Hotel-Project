@@ -1,7 +1,7 @@
 ﻿using Hotel.Aplication.Models.Categoria;
-using Hotel.Web.Core;
+using Hotel.ApiConsumption.Core;
 
-namespace Hotel.Web.Models
+namespace Hotel.ApiConsumption.Models
 {
     public class CategoriaDefaultResult : BaseResult
     {

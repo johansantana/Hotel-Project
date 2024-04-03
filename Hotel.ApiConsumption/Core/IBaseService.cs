@@ -1,6 +1,6 @@
-﻿using Hotel.Web.Models;
+﻿
 
-namespace Hotel.Web.Core
+namespace Hotel.ApiConsumption.Core
 {
     public interface IBaseService<TDeResult, TSingleResult, Tadd, TUpdate>
         where TDeResult : class

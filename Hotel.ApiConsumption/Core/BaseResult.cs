@@ -1,6 +1,6 @@
 ﻿using Hotel.Aplication.Models.Categoria;
 
-namespace Hotel.Web.Core
+namespace Hotel.ApiConsumption.Core
 {
     public class BaseResult
     {
