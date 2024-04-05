@@ -4,8 +4,7 @@ using Hotel.Infrastructure;
 using Hotel.Web.Models.Usuario;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
-using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace Hotel.Web.Services.Usuario
 {
@@ -13,18 +12,12 @@ namespace Hotel.Web.Services.Usuario
     {
         private readonly IHttpClientFactory httpClientFactory;
         private readonly LoggerAdapter<UsuarioService> logger;
-        private string? baseUrl;
 
-        public UsuarioService(IConfiguration configuration, 
-            IHttpClientFactory httpClientFactory,
+        public UsuarioService(IHttpClientFactory httpClientFactory,
             LoggerAdapter<UsuarioService> logger)
         {
             this.logger = logger;
             this.httpClientFactory = httpClientFactory;
-            string? hostName = configuration.GetValue<string>("HostName");
-            string? port = configuration.GetValue<string>("Port");
-            baseUrl = $"{hostName}/{port}";
-
         }
 
         public async Task<UsuarioListResult> Get()
@@ -33,9 +26,9 @@ namespace Hotel.Web.Services.Usuario
             {
                 var usuarios = new UsuarioListResult();
 
-                string url = $"{baseUrl}/api/Usuario/GetUsuarios";
+                string url = $"/api/Usuario/GetUsuarios";
 
-                using (var client = httpClientFactory.CreateClient())
+                using (var client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.GetAsync(url))
                     {
@@ -56,8 +49,8 @@ namespace Hotel.Web.Services.Usuario
             {
                 var usuario = new UsuarioResult();
 
-                string url = $"{baseUrl}/api/Usuario/GetUsuarioById?id={id}";
-                using (HttpClient client = httpClientFactory.CreateClient("httphandler"))
+                string url = $"/api/Usuario/GetUsuarioById?id={id}";
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.GetAsync(url))
                     {
@@ -78,10 +71,10 @@ namespace Hotel.Web.Services.Usuario
             try
             {
                 var usuario = new UsuarioResult();
-                StringContent content = new StringContent(JsonSerializer.Serialize(usuarioAddDto), Encoding.UTF8, "application/json");
+                StringContent content = new StringContent(JsonConvert.SerializeObject(usuarioAddDto), Encoding.UTF8, "application/json");
 
-                string url = $"{baseUrl}/api/Usuario/AddUsuario";
-                using (HttpClient client = httpClientFactory.CreateClient("httphandler"))
+                string url = $"/api/Usuario/AddUsuario";
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.PostAsync(url, content))
                     {
@@ -103,10 +96,10 @@ namespace Hotel.Web.Services.Usuario
             {
                 var usuario = new UsuarioResult();
 
-                StringContent content = new StringContent(JsonSerializer.Serialize(usuarioUpdateDto), Encoding.UTF8, "application/json");
-                string url = $"{baseUrl}/api/Usuario/UpdateUsuario?id={id}";
+                StringContent content = new StringContent(JsonConvert.SerializeObject(usuarioUpdateDto), Encoding.UTF8, "application/json");
+                string url = $"/api/Usuario/UpdateUsuario?id={id}";
 
-                using (HttpClient client = httpClientFactory.CreateClient("httphandler"))
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.PutAsync(url, content))
                     {
@@ -129,7 +122,7 @@ namespace Hotel.Web.Services.Usuario
             if (response.IsSuccessStatusCode)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                result = JsonSerializer.Deserialize<T>(apiResponse);
+                result = JsonConvert.DeserializeObject<T>(apiResponse);
             }
             else
             {

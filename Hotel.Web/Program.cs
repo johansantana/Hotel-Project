@@ -12,10 +12,16 @@ builder.Services.AddScoped<IRolUsuarioService, RolUsuarioService>();
 builder.Services.AddScoped(typeof(LoggerAdapter<>));
 
 // Http Client
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("api", options =>
+{ 
+    options.BaseAddress = new Uri("http://localhost:5202");
+});
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 
 var app = builder.Build();
 

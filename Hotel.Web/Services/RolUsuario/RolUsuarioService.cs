@@ -2,9 +2,9 @@
 using Hotel.Infrastructure;
 using Hotel.Web.Models.RolUsuario;
 using System.Reflection;
-using System.Text;
-using System.Text.Json;
 using Hotel.Web.Exceptions;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Hotel.Web.Services.RolUsuario
 {
@@ -12,7 +12,6 @@ namespace Hotel.Web.Services.RolUsuario
     {
         private readonly IHttpClientFactory httpClientFactory;
         private readonly LoggerAdapter<RolUsuarioService> logger;
-        private string? baseUrl;
 
         public RolUsuarioService(IConfiguration configuration,
             LoggerAdapter<RolUsuarioService> logger,
@@ -20,9 +19,6 @@ namespace Hotel.Web.Services.RolUsuario
         {
             this.logger = logger;
             this.httpClientFactory = httpClientFactory;
-            string? hostName = configuration.GetValue<string>("HostName");
-            string? port = configuration.GetValue<string>("Port");
-            baseUrl = $"{hostName}/{port}";
         }
 
         public async Task<RolUsuarioListResult> Get()
@@ -31,8 +27,8 @@ namespace Hotel.Web.Services.RolUsuario
             {
                 var usuarios = new RolUsuarioListResult();
 
-                string url = $"{baseUrl}/api/RolUsuario/GetRolUsuarios";
-                using (HttpClient client = httpClientFactory.CreateClient())
+                string url = $"/api/RolUsuario/GetRolUsuarios";
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.GetAsync(url))
                     {
@@ -53,8 +49,8 @@ namespace Hotel.Web.Services.RolUsuario
             {
                 var usuario = new RolUsuarioResult();
 
-                string url = $"{baseUrl}/api/RolUsuario/GetRolUsuarioById?id={id}";
-                using (HttpClient client = httpClientFactory.CreateClient())
+                string url = $"/api/RolUsuario/GetRolUsuarioById?id={id}";
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.GetAsync(url))
                     {
@@ -74,10 +70,10 @@ namespace Hotel.Web.Services.RolUsuario
             try
             {
                 var usuario = new RolUsuarioResult();
-                StringContent content = new StringContent(JsonSerializer.Serialize(rolusuarioAddDto), Encoding.UTF8, "application/json");
+                StringContent content = new StringContent(JsonConvert.SerializeObject(rolusuarioAddDto), Encoding.UTF8, "application/json");
 
-                string url = $"{baseUrl}/api/RolUsuario/AddRolUsuario";
-                using (HttpClient client = httpClientFactory.CreateClient())
+                string url = $"/api/RolUsuario/AddRolUsuario";
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.PostAsync(url, content))
                     {
@@ -99,10 +95,10 @@ namespace Hotel.Web.Services.RolUsuario
             {
                 var usuario = new RolUsuarioResult();
 
-                StringContent content = new StringContent(JsonSerializer.Serialize(rolUsuarioUpdateDto), Encoding.UTF8, "application/json");
-                string url = $"{baseUrl}/api/RolUsuario/UpdateRolUsuario?id={id}";
+                StringContent content = new StringContent(JsonConvert.SerializeObject(rolUsuarioUpdateDto), Encoding.UTF8, "application/json");
+                string url = $"/api/RolUsuario/UpdateRolUsuario?id={id}";
 
-                using (HttpClient client = httpClientFactory.CreateClient())
+                using (HttpClient client = httpClientFactory.CreateClient("api"))
                 {
                     using (var response = await client.PutAsync(url, content))
                     {
@@ -125,7 +121,7 @@ namespace Hotel.Web.Services.RolUsuario
             if (response.IsSuccessStatusCode)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                result = JsonSerializer.Deserialize<T>(apiResponse);
+                result = JsonConvert.DeserializeObject<T>(apiResponse);
             }
             else
             {
