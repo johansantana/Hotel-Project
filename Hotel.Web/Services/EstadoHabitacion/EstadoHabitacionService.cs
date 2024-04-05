@@ -1,83 +1,125 @@
 ﻿using Hotel.Application.Dtos;
 using Hotel.Web.Models.EstadoHabitacion;
-using Hotel.Web.Models.Habitacion;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
+using Hotel.Web.Exceptions;
+using System.Net.Http;
+using Hotel.Infrastructure;
 
 namespace Hotel.Web.Services.EstadoHabitacion
 {
     public class EstadoHabitacionService : IEstadoHabitacionService
     {
-        private readonly HttpClient httpClient;
-        private readonly HttpClientHandler httpClientHandler;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly LoggerAdapter<EstadoHabitacionService> logger;
 
-        public EstadoHabitacionService()
+        public EstadoHabitacionService(IHttpClientFactory httpClientFactory,
+            LoggerAdapter<EstadoHabitacionService> logger)
         {
-            this.httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback =
-                (sender, cert, chain, sslPolicyError) => { return true; };
-            httpClient = new HttpClient(httpClientHandler);
+            this.logger = logger;
+            this.httpClientFactory = httpClientFactory;
         }
 
         public async Task<EstadoHabitacionListResult> Get()
         {
-            var estadosHabitacion = new EstadoHabitacionListResult();
-
-            string url = "http://localhost:5202/api/EstadoHabitacion/GetEstadoHabitaciones";
-            using (var response = await httpClient.GetAsync(url))
+            try
             {
-                estadosHabitacion = await HandleApiResponse<EstadoHabitacionListResult>(response);
-            }
+                var estadosHabitacion = new EstadoHabitacionListResult();
 
-            return estadosHabitacion;
+                string url = "/api/EstadoHabitacion/GetEstadoHabitaciones";
+
+                using (var httpClient = httpClientFactory.CreateClient("api"))
+                {
+                    using (var response = await httpClient.GetAsync(url))
+                    {
+                        estadosHabitacion = await HandleApiResponse<EstadoHabitacionListResult>(response);
+                    }
+                }
+
+                return estadosHabitacion;
+            }
+            catch (Exception ex)
+            {
+                throw new EstadoHabitacionServiceException("Error obteniendo los estados de habitación. " + ex.Message, logger);
+            }
         }
 
         public async Task<EstadoHabitacionResult> GetById(int id)
         {
-            var estadoHabitacion = new EstadoHabitacionResult();
-
-            string url = $"http://localhost:5202/api/EstadoHabitacion/GetEstadoHabitacionById?id={id}";
-            using (var response = await httpClient.GetAsync(url))
+            try
             {
-                estadoHabitacion = await HandleApiResponse<EstadoHabitacionResult>(response);
-            }
+                var estadoHabitacion = new EstadoHabitacionResult();
 
-            return estadoHabitacion;
+                string url = $"/api/EstadoHabitacion/GetEstadoHabitacionById?id={id}";
+                using (var httpClient = httpClientFactory.CreateClient("api"))
+                {
+                    using (var response = await httpClient.GetAsync(url))
+                    {
+                        estadoHabitacion = await HandleApiResponse<EstadoHabitacionResult>(response);
+                    }
+                }
+
+                return estadoHabitacion;
+            }
+            catch (Exception ex)
+            {
+                throw new EstadoHabitacionServiceException("Error obteniendo el estado de habitación. " + ex.Message, logger);
+            }
         }
 
         public async Task<EstadoHabitacionResult> Save(EstadoHabitacionAddDto estadoHabitacionAddDto)
         {
-            var estadoHabitacion = new EstadoHabitacionResult();
-            StringContent content = new StringContent(JsonConvert.SerializeObject(estadoHabitacionAddDto), Encoding.UTF8, "application/json");
-
-            string url = $"http://localhost:5202/api/EstadoHabitacion/AddEstadoHabitacion";
-            using (var response = await httpClient.PostAsync(url, content))
+            try
             {
-                estadoHabitacion = await HandleApiResponse<EstadoHabitacionResult>(response);
-            }
+                var estadoHabitacion = new EstadoHabitacionResult();
+                StringContent content = new StringContent(JsonConvert.SerializeObject(estadoHabitacionAddDto), Encoding.UTF8, "application/json");
 
-            return estadoHabitacion;
+                string url = $"/api/EstadoHabitacion/AddEstadoHabitacion";
+                using (var httpClient = httpClientFactory.CreateClient("api"))
+                {
+                    using (var response = await httpClient.PostAsync(url, content))
+                    {
+                        estadoHabitacion = await HandleApiResponse<EstadoHabitacionResult>(response);
+                    }
+                }
+
+                return estadoHabitacion;
+            }
+            catch (Exception ex)
+            {
+                throw new EstadoHabitacionServiceException("Error guardando el estado de habitación. " + ex.Message, logger);
+            }
         }
 
         public async Task<EstadoHabitacionResult> Update(int id, EstadoHabitacionUpdateDto estadoHabitacionUpdateDto)
         {
-            var estadoHabitacion = new EstadoHabitacionResult();
-
-            StringContent content = new StringContent(JsonConvert.SerializeObject(estadoHabitacionUpdateDto), Encoding.UTF8, "application/json");
-            string url = $"http://localhost:5202/api/EstadoHabitacion/UpdateEstadoHabitacion?id={id}";
-
-            using (var response = await httpClient.PutAsync(url, content))
+            try
             {
-                estadoHabitacion = await HandleApiResponse<EstadoHabitacionResult>(response);
-            }
+                var estadoHabitacion = new EstadoHabitacionResult();
 
-            return estadoHabitacion;
+                StringContent content = new StringContent(JsonConvert.SerializeObject(estadoHabitacionUpdateDto), Encoding.UTF8, "application/json");
+                string url = $"/EstadoHabitacion/UpdateEstadoHabitacion?id={id}";
+
+                using (var httpClient = httpClientFactory.CreateClient("api"))
+                {
+                    using (var response = await httpClient.PutAsync(url, content))
+                    {
+                        estadoHabitacion = await HandleApiResponse<EstadoHabitacionResult>(response);
+                    }
+                }
+
+                return estadoHabitacion;
+            }
+            catch (Exception ex)
+            {
+                throw new EstadoHabitacionServiceException("Error actualizando el estado de habitación. " + ex.Message, logger);
+            }
         }
 
         private async Task<T> HandleApiResponse<T>(HttpResponseMessage response) where T : new()
         {
-            T result = new T();
+            T? result = new T();
 
             if (response.IsSuccessStatusCode)
             {
@@ -86,8 +128,8 @@ namespace Hotel.Web.Services.EstadoHabitacion
             }
             else
             {
-                PropertyInfo successProperty = typeof(T).GetProperty("success");
-                PropertyInfo messageProperty = typeof(T).GetProperty("message");
+                PropertyInfo? successProperty = typeof(T).GetProperty("success");
+                PropertyInfo? messageProperty = typeof(T).GetProperty("message");
 
                 if (successProperty != null)
                 {
@@ -100,7 +142,7 @@ namespace Hotel.Web.Services.EstadoHabitacion
                 }
             }
 
-            return result;
+            return result ?? new T();
         }
     }
 }
