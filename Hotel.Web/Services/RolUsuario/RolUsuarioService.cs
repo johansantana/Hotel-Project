@@ -61,7 +61,7 @@ namespace Hotel.Web.Services.RolUsuario
             }
             catch (Exception ex)
             {
-                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+                throw new RolUsuarioServiceException("Error obteniendo el rol de usuario. " + ex.Message, logger);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Hotel.Web.Services.RolUsuario
             }
             catch (Exception ex)
             {
-                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+                throw new RolUsuarioServiceException("Error guardando el rol de usuario. " + ex.Message, logger);
             }
         }
 
@@ -110,7 +110,7 @@ namespace Hotel.Web.Services.RolUsuario
             }
             catch (Exception ex)
             {
-                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+                throw new RolUsuarioServiceException("Error actualizando el rol de usuario. " + ex.Message, logger);
             }
         }
 
