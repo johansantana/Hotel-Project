@@ -1,92 +1,140 @@
 ﻿using Hotel.Application.Dtos;
+using Hotel.Web.Exceptions;
+using Hotel.Infrastructure;
 using Hotel.Web.Models.Usuario;
-using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using System.Net.Http;
 
 namespace Hotel.Web.Services.Usuario
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly HttpClient httpClient;
-        private readonly HttpClientHandler httpClientHandler;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly LoggerAdapter<UsuarioService> logger;
+        private string? baseUrl;
 
-        public UsuarioService()
+        public UsuarioService(IConfiguration configuration, 
+            IHttpClientFactory httpClientFactory,
+            LoggerAdapter<UsuarioService> logger)
         {
-            this.httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback =
-                (sender, cert, chain, sslPolicyError) => { return true; };
-            httpClient = new HttpClient(httpClientHandler);
+            this.logger = logger;
+            this.httpClientFactory = httpClientFactory;
+            string? hostName = configuration.GetValue<string>("HostName");
+            string? port = configuration.GetValue<string>("Port");
+            baseUrl = $"{hostName}/{port}";
+
         }
 
         public async Task<UsuarioListResult> Get()
         {
-            var usuarios = new UsuarioListResult();
-
-            string url = "http://localhost:5202/api/Usuario/GetUsuarios";
-            using (var response = await httpClient.GetAsync(url))
+            try
             {
-                usuarios = await HandleApiResponse<UsuarioListResult>(response);
-            }
+                var usuarios = new UsuarioListResult();
 
-            return usuarios;
+                string url = $"{baseUrl}/api/Usuario/GetUsuarios";
+
+                using (var client = httpClientFactory.CreateClient())
+                {
+                    using (var response = await client.GetAsync(url))
+                    {
+                        usuarios = await HandleApiResponse<UsuarioListResult>(response);
+                    }
+                }
+                return usuarios;
+            }
+            catch (Exception ex)
+            {
+                throw new UsuarioServiceException("Error obteniendo los usuarios. " + ex.Message, logger);
+            }
         }
 
         public async Task<UsuarioResult> GetById(int id)
         {
-            var usuario = new UsuarioResult();
-
-            string url = $"http://localhost:5202/api/Usuario/GetUsuarioById?id={id}";
-            using (var response = await httpClient.GetAsync(url))
+            try
             {
-                usuario = await HandleApiResponse<UsuarioResult>(response);
-            }
+                var usuario = new UsuarioResult();
 
-            return usuario;
+                string url = $"{baseUrl}/api/Usuario/GetUsuarioById?id={id}";
+                using (HttpClient client = httpClientFactory.CreateClient("httphandler"))
+                {
+                    using (var response = await client.GetAsync(url))
+                    {
+                        usuario = await HandleApiResponse<UsuarioResult>(response);
+                    }
+                }
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new UsuarioServiceException("Error obteniendo el usuario. " + ex.Message, logger);
+            }
         }
 
         public async Task<UsuarioResult> Save(UsuarioAddDto usuarioAddDto)
         {
-            var usuario = new UsuarioResult();
-            StringContent content = new StringContent(JsonConvert.SerializeObject(usuarioAddDto), Encoding.UTF8, "application/json");
-
-            string url = $"http://localhost:5202/api/Usuario/AddUsuario";
-            using (var response = await httpClient.PostAsync(url, content))
+            try
             {
-                usuario = await HandleApiResponse<UsuarioResult>(response);
-            }
+                var usuario = new UsuarioResult();
+                StringContent content = new StringContent(JsonSerializer.Serialize(usuarioAddDto), Encoding.UTF8, "application/json");
 
-            return usuario;
+                string url = $"{baseUrl}/api/Usuario/AddUsuario";
+                using (HttpClient client = httpClientFactory.CreateClient("httphandler"))
+                {
+                    using (var response = await client.PostAsync(url, content))
+                    {
+                        usuario = await HandleApiResponse<UsuarioResult>(response);
+                    }
+                }
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new UsuarioServiceException("Error guardando el usuario. " + ex.Message, logger);
+            }
         }
 
         public async Task<UsuarioResult> Update(int id, UsuarioUpdateDto usuarioUpdateDto)
         {
-            var usuario = new UsuarioResult();
-
-            StringContent content = new StringContent(JsonConvert.SerializeObject(usuarioUpdateDto), Encoding.UTF8, "application/json");
-            string url = $"http://localhost:5202/api/Usuario/UpdateUsuario?id={id}";
-
-            using (var response = await httpClient.PutAsync(url, content))
+            try
             {
-                usuario = await HandleApiResponse<UsuarioResult>(response);
-            }
+                var usuario = new UsuarioResult();
 
-            return usuario;
+                StringContent content = new StringContent(JsonSerializer.Serialize(usuarioUpdateDto), Encoding.UTF8, "application/json");
+                string url = $"{baseUrl}/api/Usuario/UpdateUsuario?id={id}";
+
+                using (HttpClient client = httpClientFactory.CreateClient("httphandler"))
+                {
+                    using (var response = await client.PutAsync(url, content))
+                    {
+                        usuario = await HandleApiResponse<UsuarioResult>(response);
+                    }
+                }
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new UsuarioServiceException("Error Actualizando el usuario. " + ex.Message, logger);
+            }
         }
 
         private async Task<T> HandleApiResponse<T>(HttpResponseMessage response) where T : new()
         {
-            T result = new T();
+            T? result = new T();
 
             if (response.IsSuccessStatusCode)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                result = JsonConvert.DeserializeObject<T>(apiResponse);
+                result = JsonSerializer.Deserialize<T>(apiResponse);
             }
             else
             {
-                PropertyInfo successProperty = typeof(T).GetProperty("success");
-                PropertyInfo messageProperty = typeof(T).GetProperty("message");
+                PropertyInfo? successProperty = typeof(T).GetProperty("success");
+                PropertyInfo? messageProperty = typeof(T).GetProperty("message");
 
                 if (successProperty != null)
                 {
@@ -99,7 +147,7 @@ namespace Hotel.Web.Services.Usuario
                 }
             }
 
-            return result;
+            return result ?? new T();
         }
     }
 }

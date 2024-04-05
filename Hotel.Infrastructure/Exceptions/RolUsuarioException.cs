@@ -1,6 +1,4 @@
-﻿using Hotel.Application;
-
-namespace Hotel.Infrastructure;
+﻿namespace Hotel.Infrastructure;
 
 public class RolUsuarioException : BaseException<RolUsuarioRepository>
 {

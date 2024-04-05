@@ -1,92 +1,136 @@
 ﻿using Hotel.Application.Dtos;
+using Hotel.Infrastructure;
 using Hotel.Web.Models.RolUsuario;
-using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
+using Hotel.Web.Exceptions;
 
 namespace Hotel.Web.Services.RolUsuario
 {
     public class RolUsuarioService : IRolUsuarioService
     {
-        private readonly HttpClient httpClient;
-        private readonly HttpClientHandler httpClientHandler;
+        private readonly IHttpClientFactory httpClientFactory;
+        private readonly LoggerAdapter<RolUsuarioService> logger;
+        private string? baseUrl;
 
-        public RolUsuarioService()
+        public RolUsuarioService(IConfiguration configuration,
+            LoggerAdapter<RolUsuarioService> logger,
+            IHttpClientFactory httpClientFactory)
         {
-            this.httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ServerCertificateCustomValidationCallback =
-                (sender, cert, chain, sslPolicyError) => { return true; };
-            httpClient = new HttpClient(httpClientHandler);
+            this.logger = logger;
+            this.httpClientFactory = httpClientFactory;
+            string? hostName = configuration.GetValue<string>("HostName");
+            string? port = configuration.GetValue<string>("Port");
+            baseUrl = $"{hostName}/{port}";
         }
 
         public async Task<RolUsuarioListResult> Get()
         {
-            var usuarios = new RolUsuarioListResult();
-
-            string url = "http://localhost:5202/api/RolUsuario/GetRolUsuarios";
-            using (var response = await httpClient.GetAsync(url))
+            try
             {
-                usuarios = await HandleApiResponse<RolUsuarioListResult>(response);
-            }
+                var usuarios = new RolUsuarioListResult();
 
-            return usuarios;
+                string url = $"{baseUrl}/api/RolUsuario/GetRolUsuarios";
+                using (HttpClient client = httpClientFactory.CreateClient())
+                {
+                    using (var response = await client.GetAsync(url))
+                    {
+                        usuarios = await HandleApiResponse<RolUsuarioListResult>(response);
+                    }
+                }
+                return usuarios;
+            }
+            catch (Exception ex)
+            {
+                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+            }
         }
 
         public async Task<RolUsuarioResult> GetById(int id)
         {
-            var usuario = new RolUsuarioResult();
-
-            string url = $"http://localhost:5202/api/RolUsuario/GetRolUsuarioById?id={id}";
-            using (var response = await httpClient.GetAsync(url))
+            try
             {
-                usuario = await HandleApiResponse<RolUsuarioResult>(response);
-            }
+                var usuario = new RolUsuarioResult();
 
-            return usuario;
+                string url = $"{baseUrl}/api/RolUsuario/GetRolUsuarioById?id={id}";
+                using (HttpClient client = httpClientFactory.CreateClient())
+                {
+                    using (var response = await client.GetAsync(url))
+                    {
+                        usuario = await HandleApiResponse<RolUsuarioResult>(response);
+                    }
+                }
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+            }
         }
 
         public async Task<RolUsuarioResult> Save(RolUsuarioAddDto rolusuarioAddDto)
         {
-            var usuario = new RolUsuarioResult();
-            StringContent content = new StringContent(JsonConvert.SerializeObject(rolusuarioAddDto), Encoding.UTF8, "application/json");
-
-            string url = $"http://localhost:5202/api/RolUsuario/AddRolUsuario";
-            using (var response = await httpClient.PostAsync(url, content))
+            try
             {
-                usuario = await HandleApiResponse<RolUsuarioResult>(response);
-            }
+                var usuario = new RolUsuarioResult();
+                StringContent content = new StringContent(JsonSerializer.Serialize(rolusuarioAddDto), Encoding.UTF8, "application/json");
 
-            return usuario;
+                string url = $"{baseUrl}/api/RolUsuario/AddRolUsuario";
+                using (HttpClient client = httpClientFactory.CreateClient())
+                {
+                    using (var response = await client.PostAsync(url, content))
+                    {
+                        usuario = await HandleApiResponse<RolUsuarioResult>(response);
+                    }
+                }
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+            }
         }
 
         public async Task<RolUsuarioResult> Update(int id, RolUsuarioUpdateDto rolUsuarioUpdateDto)
         {
-            var usuario = new RolUsuarioResult();
-
-            StringContent content = new StringContent(JsonConvert.SerializeObject(rolUsuarioUpdateDto), Encoding.UTF8, "application/json");
-            string url = $"http://localhost:5202/api/RolUsuario/UpdateRolUsuario?id={id}";
-
-            using (var response = await httpClient.PutAsync(url, content))
+            try
             {
-                usuario = await HandleApiResponse<RolUsuarioResult>(response);
-            }
+                var usuario = new RolUsuarioResult();
 
-            return usuario;
+                StringContent content = new StringContent(JsonSerializer.Serialize(rolUsuarioUpdateDto), Encoding.UTF8, "application/json");
+                string url = $"{baseUrl}/api/RolUsuario/UpdateRolUsuario?id={id}";
+
+                using (HttpClient client = httpClientFactory.CreateClient())
+                {
+                    using (var response = await client.PutAsync(url, content))
+                    {
+                        usuario = await HandleApiResponse<RolUsuarioResult>(response);
+                    }
+                }
+
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new RolUsuarioServiceException("Error obteniendo los roles de usuario. " + ex.Message, logger);
+            }
         }
 
         public async Task<T> HandleApiResponse<T>(HttpResponseMessage response) where T : new()
         {
-            T result = new T();
+            T? result = new T();
 
             if (response.IsSuccessStatusCode)
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
-                result = JsonConvert.DeserializeObject<T>(apiResponse);
+                result = JsonSerializer.Deserialize<T>(apiResponse);
             }
             else
             {
-                PropertyInfo successProperty = typeof(T).GetProperty("success");
-                PropertyInfo messageProperty = typeof(T).GetProperty("message");
+                PropertyInfo? successProperty = typeof(T).GetProperty("success");
+                PropertyInfo? messageProperty = typeof(T).GetProperty("message");
 
                 if (successProperty != null)
                 {
@@ -99,7 +143,7 @@ namespace Hotel.Web.Services.RolUsuario
                 }
             }
 
-            return result;
+            return result ?? new T();
         }
     }
 }

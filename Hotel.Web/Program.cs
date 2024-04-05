@@ -1,15 +1,24 @@
 using Hotel.Web.Services.Usuario;
 using Hotel.Web.Services.RolUsuario;
+using Hotel.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Services
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IRolUsuarioService, RolUsuarioService>();
+
+// Logger
+builder.Services.AddScoped(typeof(LoggerAdapter<>));
+
+// Http Client
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -1,6 +1,7 @@
 ﻿using Hotel.Application.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Hotel.Web.Services.Usuario;
+using System.Net.Http;
 
 namespace Hotel.Web.Controllers
 {
